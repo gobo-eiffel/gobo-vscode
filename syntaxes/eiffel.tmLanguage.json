@@ -1,0 +1,170 @@
+﻿{
+	"scopeName": "source.eiffel",
+	"patterns": [
+		{
+			"name": "comment.line.double-dash.eiffel",
+			"match": "--.*$"
+		},
+		{
+			"name": "string.quoted.verbatim.square.eiffel",
+			"begin": "\"[^\"\n]*\\[[^\\S\n]*$",
+			"end": "^[^\\S\n]*][^\"\n]*\""
+		},
+		{
+			"name": "string.quoted.verbatim.curly.eiffel",
+			"begin": "\"[^\"\n]*\\{[^\\S\n]*$",
+			"end": "^[^\\S\n]*}[^\"\n]*\""
+		},
+		{
+			"name": "invalid.illegal.string.eiffel",
+			"match": "\"[^\\S\n]*$"
+		},
+		{
+			"name": "string.quoted.double.eiffel",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"match": "^[^\\S\n]*%[^\\S\n]*$",
+					"name": "invalid.illegal.string.eiffel"
+				},
+				{
+					"match": "^[^\\S\n]*%",
+					"name": "constant.character.escape.eiffel"
+				},
+				{
+					"match": "%[ABCDFHLNQRSTUV%'\"()<>]",
+					"name": "constant.character.escape.eiffel"
+				},
+				{
+					"match": "%/([0-9](_*[0-9]+)*|0[xX][0-9a-fA-F](_*[0-9a-fA-F]+)*|0[cC][0-7](_*[0-7]+)*|0[bB][0-1](_*[0-1]+)*)+/",
+					"name": "constant.character.escape.eiffel"
+				},
+				{
+					"match": "%[^\\S\n]*$",
+					"name": "constant.character.escape.eiffel"
+				},
+				{
+					"match": "%([^ABCDFHLNQRSTUV%'\"()<>\\s]|[^\\S\n]+(?=\\S))",
+					"name": "invalid.illegal.string.eiffel"
+				},
+				{
+					"match": "^[^\\S\n]*[^%\n][^\"\n]*",
+					"name": "invalid.illegal.string.eiffel"
+				},
+				{
+					"match": "([^%\"\n]|%(\\S|[^\\S\n]+(?=\\S)))+$",
+					"name": "invalid.illegal.string.eiffel"
+				}
+			]
+		},
+		{
+			"name": "string.quoted.single.character.eiffel",
+			"match": "'([^%\n]|%[ABCDFHLNQRSTUV%'\"()<>]|%/([0-9](_*[0-9]+)*|0[xX][0-9a-fA-F](_*[0-9a-fA-F]+)*|0[cC][0-7](_*[0-7]+)*|0[bB][0-1](_*[0-1]+)*)+/)'"
+		},
+		{
+			"name": "invalid.illegal.character.eiffel",
+			"match": "'[^\n]*'"
+		},
+		{
+			"name": "constant.numeric.decimal.eiffel",
+			"match": "\\b[0-9]+(_+[0-9]+)*(?=([^.]|\\.\\.))\\b"
+		},
+		{
+			"name": "constant.numeric.hexdecimal.eiffel",
+			"match": "\\b0[xX][0-9a-fA-F]+(_+[0-9a-fA-F]+)*\\b"
+		},
+		{
+			"name": "constant.numeric.octal.eiffel",
+			"match": "\\b0[cC][0-7]+(_+[0-7]+)*\\b"
+		},
+		{
+			"name": "constant.numeric.binary.eiffel",
+			"match": "\\b0[bB][0-1]+(_+[0-1]+)*\\b"
+		},
+		{
+			"name": "constant.numeric.real.eiffel",
+			"match": "\\b[0-9]+(_+[0-9]+)*\\.(?=[^.0-9eE])"
+		},
+		{
+			"name": "constant.numeric.real.eiffel",
+			"match": "\\b[0-9]+(_+[0-9]+)*\\.([0-9]+(_+[0-9]+)*)?[eE][+-]?[0-9]+(_+[0-9]+)*\\b"
+		},
+		{
+			"name": "constant.numeric.real.eiffel",
+			"match": "\\b[0-9]+(_+[0-9]+)*\\.[0-9]+(_+[0-9]+)*([eE][+-]?[0-9]+(_+[0-9]+)*)?\\b"
+		},
+		{
+			"name": "constant.numeric.real.eiffel",
+			"match": "\\.[0-9]+(_+[0-9]+)*([eE][+-]?[0-9]+(_+[0-9]+)*)?\\b"
+		},
+		{
+			"name": "keyword.control.eiffel",
+			"match": "(?i)\\b(across|agent|alias|all|and|as|assign|attached|attribute|check|class|convert|create|debug|deferred|detachable)\\b"
+		},
+		{
+			"name": "keyword.control.eiffel",
+			"match": "(?i)\\b(do|else|elseif|end|ensure|expanded|export|external|feature|from|frozen|if|implies|inherit|inspect|invariant|is)\\b"
+		},
+		{
+			"name": "keyword.control.eiffel",
+			"match": "(?i)\\b(like|local|loop|not|note|obsolete|old|once|or|redefine|reference|rename|require|rescue|retry|select)\\b"
+		},
+		{
+			"name": "keyword.control.eiffel",
+			"match": "(?i)\\b(separate|some|then|undefine|until|variant|when|xor)\\b"
+		},
+		{
+			"name": "keyword.other.eiffel",
+			"match": "(?i)\\b(current|false|precursor|result|true|void)\\b"
+		},
+		{
+			"name": "keyword.control.deprecated.eiffel",
+			"match": "(?i)\\b(creation|indexing|strip)\\b"
+		},
+		{
+			"name": "keyword.other.deprecated.eiffel",
+			"match": "(?i)\\b(unique)\\b"
+		},
+		{
+			"name": "entity.name.type.class.eiffel",
+			"match": "\\b[A-Z][A-Z0-9_]*\\b"
+		},
+		{
+			"name": "variable.other.eiffel",
+			"match": "(?i)\\b[a-z][a-z0-9_]*\\b"
+		},
+		{
+			"name": "punctuation.separator.eiffel",
+			"match": "([;,:.]|->)(?=([a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-\\-))"
+		},
+		{
+			"name": "punctuation.section.block.begin.eiffel",
+			"match": "([({\\[]|<<)(?=([a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-\\-))"
+		},
+		{
+			"name": "punctuation.section.block.end.eiffel",
+			"match": "([)}\\]]|>>)(?=([a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-\\-))"
+		},
+		{
+			"name": "keyword.operator.eiffel",
+			"match": "([-+*/^=><!?$@~∀∃¦⟳⟲∧⇒¬∨⊻]|//|\\\\|/=|/~|>=|<=|\\.\\.|:=|\\?=|∧…|∨…)(?=([a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-\\-))"
+		},
+		{
+			"name": "keyword.operator.free_operator.deprecated.eiffel",
+			"match": "[#|&]([@#0-9a-zA-Z_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~]|\\-[@#0-9a-zA-Z_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~])*(\\-(?=[^-]))?"
+		},
+		{
+			"name": "keyword.operator.free_operator.deprecated.eiffel",
+			"match": "@([@#0-9_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~]|\\-[@#0-9a-zA-Z_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~])([@#0-9a-zA-Z_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~]|\\-[@#0-9a-zA-Z_!$&'()*+,./:;<>=?\\[\\]\\\\^`{}|~])*(\\-(?=[^-]))?"
+		},		
+		{
+			"name": "keyword.operator.free_operator.eiffel",
+			"match": "([^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\->]|>[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s>]|<[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s<])+([^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-]\\-(?=[^-])|[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\->]>|[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s<]<)"
+		},
+		{
+			"name": "keyword.operator.free_operator.eiffel",
+			"match": "([^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\->]|>[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s>]|<[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s<])*([^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\-<>]|\\-[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s\\->]|>[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s>\\-]|<[^a-zA-Z0-9_:;,?'\"$.=()\\[\\]{}\\s<\\-])(\\-(?=[^-]))?"
+		}
+	]
+}
