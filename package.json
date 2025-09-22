@@ -2,8 +2,14 @@
 	"name": "gobo-eiffel",
 	"displayName": "Gobo Eiffel",
 	"description": "Eiffel language support using Gobo Eiffel",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"publisher": "gobosoft",
+	"author": {
+		"name": "Eric Bezault",
+		"email": "ericb@gobosoft.com",
+		"url": "https://www.gobosoft.com"
+	},
+	"icon": "images/gobo.png", 
 	"engines": {
 		"vscode": "^1.104.0"
 	},
@@ -11,7 +17,6 @@
 		"Programming Languages"
 	],
 	"activationEvents": [
-		"onCommand:gobo-eiffel.compileAndRunEiffelFile",
 		"onDebug:eiffel",
 		"onDebugInitialConfigurations",
 		"onDebugResolve:eiffel"
@@ -56,78 +61,323 @@
 		"commands": [
 			{
 				"command": "gobo-eiffel.compileAndRunEiffelFile",
-				"title": "Comiple & Run Eiffel File",
+				"title": "Compile & Run Eiffel File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.compileEiffelFile",
+				"title": "Compile Eiffel File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.runEiffelFile",
+				"title": "Run Eiffel File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.compileAndRunWithEcfFile",
+				"title": "Compile & Run With ECF File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.compileWithEcfFile",
+				"title": "Compile With ECF File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.runWithEcfFile",
+				"title": "Run With ECF File",
 				"category": "Gobo Eiffel"
 			}
 		],
 		"debuggers": [
 			{
 				"type": "eiffel",
-				"label": "Eiffel",
+				"label": "Gobo Eiffel",
 				"languages": [
 					"eiffel"
 				],
 				"configurationSnippets": [
 					{
-						"label": "Gobo Eiffel: Compile & Run Eiffel File",
-						"description": "Compile and run the current Eiffel file",
+						"label": "Gobo Eiffel: Compile & Run Eiffel System",
+						"description": "Compile and run Eiffel System",
 						"body": {
-							"name": "Compile & Run Eiffel File",
+							"name": "Compile & Run Eiffel System",
 							"type": "eiffel",
 							"request": "launch",
-							"program": "${file}",
-							"console": "integratedTerminal",
-							"internalConsoleOptions": "neverOpen"
+							"ecfFile": "",
+							"ecfTarget": "",
+							"compilationOptions": [],
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {}
 						}
 					},
 					{
-						"label": "Gobo Eiffel: Run Executable Only",
-						"description": "Run the compiled Eiffel executable only",
+						"label": "Gobo Eiffel: Compile Eiffel System",
+						"description": "Compile Eiffel System",
 						"body": {
-							"name": "Run Eiffel Executable Only",
+							"name": "Compile Eiffel System",
 							"type": "eiffel",
 							"request": "launch",
-							"program": "${file}",
-							"console": "integratedTerminal",
-							"internalConsoleOptions": "neverOpen",
-							"runBinaryOnly": true
+							"ecfFile": "",
+							"ecfTarget": "",
+							"compilationOptions": [],
+							"buildDir": "",
+							"environmentVariables": {},
+							"compileOnly": true
 						}
+					},
+					{
+						"label": "Gobo Eiffel: Run Eiffel System",
+						"description": "Run Eiffel System",
+						"body": {
+							"name": "Run Eiffel System",
+							"type": "eiffel",
+							"request": "launch",
+							"ecfFile": "",
+							"ecfTarget": "",
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {},
+							"runOnly": true
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Compile & Run Current Eiffel File",
+						"description": "Compile and run the current Eiffel file",
+						"body": {
+							"name": "Compile & Run Current Eiffel File",
+							"type": "eiffel",
+							"request": "launch",
+							"compilationOptions": [],
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {}
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Compile Current Eiffel File",
+						"description": "Compile the current Eiffel file",
+						"body": {
+							"name": "Compile Current Eiffel File",
+							"type": "eiffel",
+							"request": "launch",
+							"compilationOptions": [],
+							"buildDir": "",
+							"environmentVariables": {},
+							"compileOnly": true
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Run Current Eiffel File",
+						"description": "Run the current Eiffel file",
+						"body": {
+							"name": "Run Current Eiffel File",
+							"type": "eiffel",
+							"request": "launch",
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {},
+							"runOnly": true
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Compile & Run With Current ECF File",
+						"description": "Compile and run using the current ECF file",
+						"body": {
+							"name": "Compile & Run With Current ECF File",
+							"type": "eiffel",
+							"request": "launch",
+							"compilationOptions": [],
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {}
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Compile With Current ECF File",
+						"description": "Compile using the current ECF file",
+						"body": {
+							"name": "Compile With Current ECF File",
+							"type": "eiffel",
+							"request": "launch",
+							"compilationOptions": [],
+							"buildDir": "",
+							"environmentVariables": {},
+							"compileOnly": true
+						}
+					},
+					{
+						"label": "Gobo Eiffel: Run With Current ECF File",
+						"description": "Run using the current ECF file",
+						"body": {
+							"name": "Run With Current ECF File",
+							"type": "eiffel",
+							"request": "launch",
+							"buildDir": "",
+							"args": [],
+							"workingDir": "",
+							"environmentVariables": {},
+							"runOnly": true
+						}
+					}
+				],
+				"initialConfigurations": [
+					{
+						"name": "Compile & Run Eiffel System",
+						"type": "eiffel",
+						"request": "launch",
+						"ecfFile": "${GOBO}/library/common/example/hello_world/system.ecf",
+						"ecfTarget": "hello_world",
+						"compilationOptions": [],
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {}
+					},
+					{
+						"name": "Compile Eiffel System",
+						"type": "eiffel",
+						"request": "launch",
+						"ecfFile": "${GOBO}/library/common/example/hello_world/system.ecf",
+						"ecfTarget": "hello_world",
+						"compilationOptions": [],
+						"buildDir": "",
+						"environmentVariables": {},
+						"compileOnly": true
+					},
+					{
+						"name": "Run Eiffel System",
+						"type": "eiffel",
+						"request": "launch",
+						"ecfFile": "${GOBO}/library/common/example/hello_world/system.ecf",
+						"ecfTarget": "hello_world",
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {},
+						"runOnly": true
+					},
+					{
+						"name": "Compile & Run With Current ECF File",
+						"type": "eiffel",
+						"request": "launch",
+						"compilationOptions": [],
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {}
+					},
+					{
+						"name": "Compile With Current ECF File",
+						"type": "eiffel",
+						"request": "launch",
+						"compilationOptions": [],
+						"buildDir": "",
+						"environmentVariables": {},
+						"compileOnly": true
+					},
+					{
+						"name": "Run With Current ECF File",
+						"type": "eiffel",
+						"request": "launch",
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {},
+						"runOnly": true
+					},
+					{
+						"name": "Compile & Run Current Eiffel File",
+						"type": "eiffel",
+						"request": "launch",
+						"compilationOptions": [],
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {}
+					},
+					{
+						"name": "Compile Current Eiffel File",
+						"type": "eiffel",
+						"request": "launch",
+						"compilationOptions": [],
+						"buildDir": "",
+						"environmentVariables": {},
+						"compileOnly": true
+					},
+					{
+						"name": "Run Current Eiffel File",
+						"type": "eiffel",
+						"request": "launch",
+						"buildDir": "",
+						"args": [],
+						"workingDir": "",
+						"environmentVariables": {},
+						"runOnly": true
 					}
 				],
 				"configurationAttributes": {
 					"launch": {
-						"required": [
-							"program"
-						],
 						"properties": {
-							"program": {
+							"ecfFile": {
 								"type": "string",
-								"description": "The Eiffel source file to compile and run",
+								"description": "ECF file used for the compilation (default: current file)",
 								"default": "${file}"
 							},
-							"console": {
+							"ecfTarget": {
 								"type": "string",
-								"enum": [
-									"internalConsole",
-									"integratedTerminal",
-									"externalTerminal"
-								],
-								"default": "integratedTerminal",
-								"description": "Where to run the program"
+								"description": "Target in ECF file (default: last target in ECF file)",
+								"default": ""
 							},
-							"internalConsoleOptions": {
+							"compilationOptions": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								},
+								"description": "Command-line options to be passed to the Eiffel compiler",
+								"default": []
+							},
+							"buildDir": {
 								"type": "string",
-								"enum": [
-									"neverOpen",
-									"openOnSessionStart",
-									"openOnFirstSessionStart"
-								],
-								"default": "neverOpen",
-								"description": "Controls when to open the internal console"
+								"description": "Where to compile the executable (default: folder of ECF file)",
+								"default": ""
 							},
-							"runBinaryOnly": {
+							"args": {
+								"type": "array",
+								"items": {
+									"type": "string"
+								},
+								"description": "Arguments to be passed to the executable",
+								"default": []
+							},
+							"workingDir": {
+								"type": "string",
+								"description": "Where to run the executable (default: folder of ECF file)",
+								"default": ""
+							},
+							"environmentVariables": {
+								"type": "object",
+								"additionalProperties": {
+									"type": "string"
+								},
+								"description": "Environment variables for the compilation and the execution",
+								"default": {}
+							},
+							"compileOnly": {
 								"type": "boolean",
-								"description": "If true, runs the compiled Eiffel executable without recompiling.",
+								"description": "Do not run the executable",
+								"default": false
+							},
+							"runOnly": {
+								"type": "boolean",
+								"description": "Do not compile",
 								"default": false
 							}
 						}
@@ -139,14 +389,104 @@
 			"commandPalette": [
 				{
 					"command": "gobo-eiffel.compileAndRunEiffelFile",
-					"when": "editorLangId == eiffel",
+					"when": "resourceExtname == .e",
 					"group": ""
+				},
+				{
+					"command": "gobo-eiffel.compileEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": ""
+				},
+				{
+					"command": "gobo-eiffel.runEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": ""
+				},
+				{
+					"command": "gobo-eiffel.compileAndRunWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": ""
+				},
+				{
+					"command": "gobo-eiffel.compileWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": ""
+				},
+				{
+					"command": "gobo-eiffel.runWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": ""
+				}
+			],
+			"explorer/context": [
+				{
+					"command": "gobo-eiffel.compileAndRunEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.runEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileAndRunWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.runWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
+				}
+			],
+			"editor/context": [
+				{
+					"command": "gobo-eiffel.compileAndRunEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.runEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileAndRunWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.compileWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
+				},
+				{
+					"command": "gobo-eiffel.runWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "navigation"
 				}
 			]
 		}
 	},
 	"dependencies": {
 		"7zip-bin": "^5.2.0",
+		"shell-quote": "^1.8.3",
 		"tar": "^7.4.3"
 	},
 	"scripts": {

@@ -2,28 +2,36 @@ import * as vscode from 'vscode';
 import * as cp from 'child_process';
 import * as path from 'path';
 import * as os from 'os';
-import { compileEiffelFile } from './eiffelCompiler';
+import * as fs from 'fs';
+import { compileEiffelSystem, getExecutableName } from './eiffelCompiler';
+import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
 
 export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 	// Register debug configuration provider
 	const provider: vscode.DebugConfigurationProvider = {
-		resolveDebugConfiguration(folder, config, token) {
+		async resolveDebugConfiguration(folder, config, token) {
+			// Add missing parts to the Launch config before executing it.
+			config = config || {};
 			if (!config.type) {
 				config.type = 'eiffel';
 			}
 			if (!config.name) {
-				config.name = 'Compile & Run Eiffel File';
+				config.name = 'Compile & Run Eiffel System';
 			}
 			if (!config.request) {
 				config.request = 'launch';
 			}
-			if (!config.program) {
+			if (!config.ecfFile) {
 				const editor = vscode.window.activeTextEditor;
 				if (!editor) {
 					vscode.window.showErrorMessage('No active editor to run');
 					return undefined;
 				}
-				config.program = editor.document.fileName;
+				config.ecfFile = editor.document.fileName;
+			} else if (config.ecfFile.startsWith('${GOBO}')) {
+				const goboPath = await getOrInstallOrUpdateGoboEiffel(context);
+				const path = ((goboPath) ? goboPath : '');
+				config.ecfFile = config.ecfFile.replace(/\$\{GOBO\}/, path);
 			}
 			return config;
 		}
@@ -42,12 +50,12 @@ export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 			const stubAdapter: vscode.DebugAdapter = {
 				onDidSendMessage: emitter.event, // <-- required property
 				handleMessage: (message: any) => {
-					// Only handle requests
+					// Only handle requests.
 					if (message?.type !== 'request') {
 						return;
 					}
 					const cmd = message.command;
-					// Stop button pressed
+					// Action when the Stop button is pressed.
 					if (cmd === 'disconnect') {
 						if (runCtx.child) {
 							try { runCtx.child.kill(); } catch (e) { /* ignore */ }
@@ -64,7 +72,7 @@ export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 						return;
 					}
 
-					// Input from Debug Console → program stdin
+					// Send the input from Debug Console to the program stdin.
 					if (cmd === 'evaluate') {
 						const expr: string | undefined = message.arguments?.expression;
 						const context: string | undefined = message.arguments?.context;
@@ -113,19 +121,26 @@ export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 				dispose: () => emitter.dispose()
 			};
 
-			// Original file path, e.g., "x/y/z/hello_world.e"
-			const filePath = session.configuration.program;
-			const baseName = path.basename(filePath, path.extname(filePath)); // "hello_world"
-			const exeFile = (os.platform() === 'win32' ? `${baseName}.exe` : baseName);
-			const fileDir = path.dirname(filePath);
-			
-			const runBinaryOnly = session.configuration.runBinaryOnly ?? false;
-			if (runBinaryOnly) {
-				runWithPipes(exeFile, fileDir, emitter, runCtx);
+			const filePath = session.configuration.ecfFile ?? '';
+			const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+			const ecfTarget = session.configuration.ecfTarget;
+			const compilationOptions = session.configuration.compilationOptions ?? [];
+			const configBuildDir = session.configuration.buildDir;
+			const buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
+			const args = session.configuration.args ?? [];
+			const configWorkingDir = session.configuration.workingDir;
+			const workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
+			const userEnv = session.configuration.environmentVariables ?? {};
+			const environmentVariables = {...process.env, ...userEnv};
+			const compileOnly = session.configuration.compileOnly ?? false;
+			const runOnly = session.configuration.runOnly ?? false;
+
+			if (runOnly) {
+				runEiffelSystemInDebugConsole(filePath, ecfTarget, buildDir, args, workingDir, environmentVariables, context, emitter, runCtx);
 			} else {
-				compileEiffelFile(filePath, fileDir, context).then((code) => {
-					if (code === 0) {
-						runWithPipes(exeFile, fileDir, emitter, runCtx);
+				compileEiffelSystem(filePath, ecfTarget, compilationOptions, buildDir, environmentVariables, context).then((code) => {
+					if (!compileOnly && code === 0) {
+						runEiffelSystemInDebugConsole(filePath, ecfTarget, buildDir, args, workingDir, environmentVariables, context, emitter, runCtx);
 					} else {
 						// End session
 						emitter.fire({ type: 'event', event: 'terminated', body: {} });
@@ -146,18 +161,75 @@ interface RunContext {
 	child?: cp.ChildProcessWithoutNullStreams;
 }
 
-// helper: run program directly with pipes
-async function runWithPipes(
-	program: string,
-	cwd: string,
+/**
+ * Run an already-compiled Eiffel system in the Debug Console.
+ * @param filePath ECF file used for the compilation, or Eiffel file compiled
+ * @param ecfTarget Target in ECF file (default: last target in ECF file)
+ * @param buildDir Where to compile the executable
+ * @param args Arguments to be passed to the executable
+ * @param workingdDir Where to run the executable
+ * @param env Environment variables for the execution
+ * @param context VSCode extension context
+ * @param emitter VSCode Event emitter
+ * @param runCtx contains the child process being executed (so that we can kill it from outside this function)
+ * @returns a Promise that resolves when the process exits.
+ */
+async function runEiffelSystemInDebugConsole(
+	filePath: string,
+	ecfTarget: string | undefined,
+	buildDir: string,
+	args: string[],
+	workingdDir: string,
+	env: NodeJS.ProcessEnv,
+	context: vscode.ExtensionContext,
 	emitter: vscode.EventEmitter<vscode.DebugProtocolMessage>,
 	runCtx: RunContext
-) {
+): Promise<void> {
 	// Ensure the Debug Console (REPL) is visible
 	vscode.commands.executeCommand('workbench.debug.action.toggleRepl');
 
-	const child = cp.spawn(program, [], {
-		cwd,
+	const name = await getExecutableName(filePath, ecfTarget, context);
+	if (!name) {
+		vscode.window.showErrorMessage(`No executable name found for ${filePath}`);
+		emitter.fire({
+			type: 'event',
+			event: 'output',
+			body: {
+				category: 'console',
+				output: `No executable name found for ${filePath}\n`
+			}
+		});
+		emitter.fire({ type: 'event', event: 'terminated', body: {} });
+		return;
+	}
+
+	const exeFile = path.join(buildDir, name + (os.platform() === 'win32' ? '.exe': ''));
+	try {
+		if (!fs.existsSync(exeFile)) {
+			throw new Error(`file not found: ${exeFile}`);
+		}
+		try {
+			fs.accessSync(exeFile, fs.constants.X_OK);
+		} catch {
+			throw new Error(`file is not executable: ${exeFile}`);
+		}
+	} catch (err: any) {
+		vscode.window.showErrorMessage(`Failed to launch program: ${err.message}`);
+		emitter.fire({
+			type: 'event',
+			event: 'output',
+			body: {
+				category: 'console',
+				output: `Failed to launch program: ${err.message}\n`
+			}
+		});
+		emitter.fire({ type: 'event', event: 'terminated', body: {} });
+		return;
+	}
+
+	const child = cp.spawn(exeFile, args, {
+		cwd: workingdDir,
+		env: env,
 		stdio: ['pipe', 'pipe', 'pipe']
 	});
 	runCtx.child = child;
