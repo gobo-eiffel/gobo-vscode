@@ -6,6 +6,7 @@ import * as fs from 'fs';
 import * as https from 'https';
 import * as tar from 'tar';
 import { path7za } from '7zip-bin';
+import { ensureEmptyDir } from './eiffelUtilities';
 
 /**
  * Get the path to Gobo Eiffel installation.
@@ -128,7 +129,7 @@ async function checkForUpdates(goboPath: string, context: vscode.ExtensionContex
 }
 
 /**
- * Download and install latest version of Gobo Eiffel
+ * Download and install latest version of Gobo Eiffel.
  * @param fileUrl URL of the file to be downloaded
  * @param fileName Name  of the file to be downloaded
  * @param context VSCode extension context
@@ -237,7 +238,7 @@ async function downloadAndInstall(fileUrl: string, fileName: string, context: vs
 }
 
 /**
- * Get the Gobo Eiffel version for a given installation folder
+ * Get the Gobo Eiffel version for a given installation folder.
  * @param goboPath folder containing Gobo Eiffel installation
  * @returns version string like "gobo-25.09" or undefined on error
  */
@@ -275,7 +276,7 @@ async function getLocalGoboVersion(goboPath: string): Promise<string | undefined
 }
 
 /**
- * Get information about the latest release of Gobo Eiffel
+ * Get information about the latest release of Gobo Eiffel.
  * @returns information about the latest release of Gobo Eiffel, or undefined on error
  */
 async function fetchLatestRelease(): Promise<{ tag: string; assetUrl: string; assetName: string } | undefined> {
@@ -569,36 +570,4 @@ export async function extractTarXzWithProgress(
 			});
 		}
 	);
-}
-
-/**
- * Ensure that a directory exists and is empty.
- * - If it does not exist → creates it.
- * - If it exists but is not empty → throws an error (or optionally clears it).
- * @param dirPath Path to the directory to be checked
- * @param clearIfNotEmpty Should the directory be wiped out if not empty
- */
-export function ensureEmptyDir(dirPath: string, clearIfNotEmpty = false): void {
-	// If directory does not exist → create it
-	if (!fs.existsSync(dirPath)) {
-		fs.mkdirSync(dirPath, { recursive: true });
-		return;
-	}
-
-	// It exists → check contents
-	const files = fs.readdirSync(dirPath);
-	if (files.length === 0) {
-		return; // Already empty
-	}
-
-	if (clearIfNotEmpty) {
-		// Remove everything inside
-		for (const file of files) {
-			const filePath = path.join(dirPath, file);
-			fs.rmSync(filePath, { recursive: true, force: true });
-		}
-	} else {
-		// Fail if not empty
-		throw new Error(`Installation folder "${dirPath}" is not empty.`);
-	}
 }

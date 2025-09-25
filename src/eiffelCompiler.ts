@@ -3,8 +3,9 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
-import { quote } from 'shell-quote';
 import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
+import { getNthLineSync } from './eiffelUtilities';
+import { createNewGoboEiffelTerminal, executeInTerminal } from './eiffelTerminal';
 
 const outputChannel = vscode.window.createOutputChannel("Gobo Eiffel compilation");
 const goboEiffelDiagnostics = vscode.languages.createDiagnosticCollection('gobo-eiffel');
@@ -214,6 +215,31 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		await runEiffelSystemInTerminal(filePath, undefined, buildDir, args, workingDir, environmentVariables, context);
 	});
 	context.subscriptions.push(runWithEcfFileCmd);
+
+	const createEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.createEcfFile', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor');
+			return;
+		}
+		const doc = editor.document;
+		const filePath = doc.fileName;
+		await createEcfFile(filePath, context);
+	});
+	context.subscriptions.push(createEcfFileCmd);
+
+	const newGoboEiffelTerminalCmd = vscode.commands.registerCommand('gobo-eiffel.newGoboEiffelTerminal', async () => {
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			vscode.window.showErrorMessage('No active editor');
+			return;
+		}
+		const doc = editor.document;
+		const filePath = doc.fileName;
+		const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		const terminal = await createNewGoboEiffelTerminal(cwd, process.env, context);
+	});
+	context.subscriptions.push(newGoboEiffelTerminalCmd);
 }
 
 /**
@@ -304,38 +330,10 @@ export async function runEiffelSystemInTerminal(
 		return;
 	}
 	exeFile += (os.platform() === 'win32' ? '.exe': '');
-	let exefullPath: string;
-	exefullPath = path.join(buildDir, exeFile);
-	if (buildDir === workingDir) {
-		exeFile = (os.platform() === 'win32' ? `.\\"${exeFile}"` : `./"${exeFile}"`);
-	} else {
-		exeFile = `"${exefullPath}"`;
+	if (buildDir !== workingDir) {
+		exeFile = path.join(buildDir, exeFile);
 	}
-
-	try {
-		if (!fs.existsSync(exefullPath)) {
-			throw new Error(`file not found: ${exefullPath}`);
-		}
-		try {
-			fs.accessSync(exefullPath, fs.constants.X_OK);
-		} catch {
-			throw new Error(`file is not executable: ${exefullPath}`);
-		}
-	} catch (err: any) {
-		vscode.window.showErrorMessage(`Cannot run executable: ${err.message}`);
-		return;
-	}
-	const exeCommand = `${exeFile} ${quote(args)}`;
-
-	// Run executable in terminal
-	const terminal = vscode.window.createTerminal({
-		name: 'Gobo Eiffel Run',
-		cwd: workingDir,
-		env: env
-	});
-	terminal.show();
-	terminal.sendText(exeCommand);
-
+	await executeInTerminal(exeFile, args, workingDir, env, context);
 	return;
 }
 
@@ -370,7 +368,28 @@ export async function compileAndRunEiffelSystem(
 }
 
 /**
- * Get the executable name of the Eiffel system
+ * Create an ECF file to compile the class contained in an Eiffel file.
+ * @param filePath Eiffel file containing the root class
+ * @param context VSCode extension context
+ * @returns a Promise that resolves when the process exits.
+ */
+export async function createEcfFile(
+	filePath: string,
+	context: vscode.ExtensionContext
+): Promise<void> {
+
+	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
+	if (!goboEiffelPath) {
+		vscode.window.showErrorMessage(`Cannot run gedoc: Gobo Eiffel not installed`);
+		return;
+	}
+	const gedocPath = path.join(goboEiffelPath, 'bin', 'gedoc' + (os.platform() === 'win32' ? '.exe' : ''));
+	await executeInTerminal(gedocPath, ['--format=ecf_pretty_print', '--interactive', filePath], path.dirname(filePath), process.env, context);
+	return;
+}
+
+/**
+ * Get the executable name of the Eiffel system.
  * @param filePath ECF file used for the compilation, or Eiffel file compiled
  * @param ecfTarget Target in ECF file (default: last target in ECF file)
  * @param context VSCode extension context
@@ -419,7 +438,7 @@ export async function getExecutableName(
 /**
  * Run program in Output channel, with Eiffel compilation errors
  * also reported in the Problems window.
- * Process Zig progress information (sent to stderr)
+ * Process Zig progress information (sent to stderr).
  * @param program Program to be executed
  * @param args Arguments to be passed to the program
  * @param cwd Where to run the program
@@ -549,12 +568,13 @@ async function spawnInOutputChannel(
 				while ((idx = errBuffer.indexOf('\n')) !== -1) {
 					const line = errBuffer.slice(0, idx);
 					errBuffer = errBuffer.slice(idx + 1);
-					const matchCFile = line.match(/^(.*[\/\\]zig[\/\\])?zig(\.exe)? clang (.*[\/\\])?([^\/\\]+\.[cS]) /);
-					const matchIgnore = line.match(/^(output path: )|(include dir: )|(def file: )/);
+					const matchCFile = line.match(/zig(\.exe)? clang (.*[\/\\])?([^\/\\]+\.[cS])/);
+					const matchIgnore1 = line.match(/^(output path: )|(include dir: )|(def file: )|(\-Xclang)|(\-target-feature)/);
+					const matchIgnore2 = line.match(/(\-Xclang)|(\-target-feature)/);
 					if (matchCFile) {
-						const cFile = matchCFile[4];
+						const cFile = matchCFile[3];
 						outputChannel.appendLine(cFile);
-					} else if (!matchIgnore) {
+					} else if (!matchIgnore1 && !matchIgnore2) {
 						outputChannel.appendLine(line);
 					}
 				}
@@ -584,55 +604,4 @@ async function spawnInOutputChannel(
 		});
 	});
 	return error_code;
-}
-
-/**
- * Get the N-th line in a file
- * @param filePath Name of the file
- * @param n Line number
- * @param context VSCode extension context
- * @returns the n-th line, or undefined on error
- */
-function getNthLineSync(filePath: string, n: number): string | undefined {
-	if (n <= 0) {
-		return undefined;
-	}
-
-	const fd = fs.openSync(filePath, 'r'); // open file descriptor
-	const buffer = Buffer.alloc(1024);     // read in chunks
-	let line = '';
-	let lineCount = 0;
-	let bytesRead: number;
-
-	try {
-		do {
-			bytesRead = fs.readSync(fd, buffer, 0, buffer.length, null);
-			if (bytesRead > 0) {
-				let chunk = buffer.toString('utf8', 0, bytesRead);
-				for (let i = 0; i < chunk.length; i++) {
-					const char = chunk[i];
-					if (char === '\n') {
-						lineCount++;
-						if (lineCount === n) {
-							// strip trailing \r if Windows line endings
-							return line.replace(/\r$/, '');
-						}
-						line = '';
-					} else {
-						line += char;
-					}
-				}
-			}
-		} while (bytesRead > 0);
-
-		// if file ended but maybe last line without newline
-		if (line && lineCount + 1 === n) {
-			return line.replace(/\r$/, '');
-		}
-	} catch (err) {
-		return undefined;
-	} finally {
-		fs.closeSync(fd);
-	}
-	return undefined;
 }

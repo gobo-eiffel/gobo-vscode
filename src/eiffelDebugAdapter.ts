@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import { compileEiffelSystem, getExecutableName } from './eiffelCompiler';
-import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
+import { expandEnvVars } from './eiffelUtilities';
 
 export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 	// Register debug configuration provider
@@ -28,10 +28,14 @@ export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 					return undefined;
 				}
 				config.ecfFile = editor.document.fileName;
-			} else if (config.ecfFile.startsWith('${GOBO}')) {
-				const goboPath = await getOrInstallOrUpdateGoboEiffel(context);
-				const path = ((goboPath) ? goboPath : '');
-				config.ecfFile = config.ecfFile.replace(/\$\{GOBO\}/, path);
+			} else {
+				config.ecfFile = await expandEnvVars(config.ecfFile, process.env, context);
+			}
+			if (config.buildDir) {
+				config.buildDir = await expandEnvVars(config.buildDir, process.env, context);
+			}
+			if (config.workingDir) {
+				config.workingDir = await expandEnvVars(config.workingDir, process.env, context);
 			}
 			return config;
 		}
