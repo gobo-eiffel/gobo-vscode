@@ -404,125 +404,125 @@
 				{
 					"command": "gobo-eiffel.compileAndRunEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@1"
+					"group": "gobo-eiffel@1"
 				},
 				{
 					"command": "gobo-eiffel.compileEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@2"
+					"group": "gobo-eiffel@2"
 				},
 				{
 					"command": "gobo-eiffel.runEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@3"
+					"group": "gobo-eiffel@3"
 				},
 				{
 					"command": "gobo-eiffel.compileAndRunWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@4"
+					"group": "gobo-eiffel@4"
 				},
 				{
 					"command": "gobo-eiffel.compileWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@5"
+					"group": "gobo-eiffel@5"
 				},
 				{
 					"command": "gobo-eiffel.runWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@6"
+					"group": "gobo-eiffel@6"
 				},
 				{
 					"command": "gobo-eiffel.createEcfFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@7"
+					"group": "gobo-eiffel@7"
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
-					"group": "0_gobo-eiffel@8"
+					"group": "gobo-eiffel@8"
 				}
 			],
 			"explorer/context": [
 				{
 					"command": "gobo-eiffel.compileAndRunEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@1"
+					"group": "gobo-eiffel@1"
 				},
 				{
 					"command": "gobo-eiffel.compileEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@2"
+					"group": "gobo-eiffel@2"
 				},
 				{
 					"command": "gobo-eiffel.runEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@3"
+					"group": "gobo-eiffel@3"
 				},
 				{
 					"command": "gobo-eiffel.compileAndRunWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@4"
+					"group": "gobo-eiffel@4"
 				},
 				{
 					"command": "gobo-eiffel.compileWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@5"
+					"group": "gobo-eiffel@5"
 				},
 				{
 					"command": "gobo-eiffel.runWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@6"
+					"group": "gobo-eiffel@6"
 				},
 				{
 					"command": "gobo-eiffel.createEcfFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@7"
+					"group": "gobo-eiffel@7"
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
-					"group": "0_gobo-eiffel@8"
+					"group": "gobo-eiffel@8"
 				}
 			],
 			"editor/context": [
 				{
 					"command": "gobo-eiffel.compileAndRunEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@1"
+					"group": "gobo-eiffel@1"
 				},
 				{
 					"command": "gobo-eiffel.compileEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@2"
+					"group": "gobo-eiffel@2"
 				},
 				{
 					"command": "gobo-eiffel.runEiffelFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@3"
+					"group": "gobo-eiffel@3"
 				},
 				{
 					"command": "gobo-eiffel.compileAndRunWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@4"
+					"group": "gobo-eiffel@4"
 				},
 				{
 					"command": "gobo-eiffel.compileWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@5"
+					"group": "gobo-eiffel@5"
 				},
 				{
 					"command": "gobo-eiffel.runWithEcfFile",
 					"when": "resourceExtname == .ecf",
-					"group": "0_gobo-eiffel@6"
+					"group": "gobo-eiffel@6"
 				},
 				{
 					"command": "gobo-eiffel.createEcfFile",
 					"when": "resourceExtname == .e",
-					"group": "0_gobo-eiffel@7"
+					"group": "gobo-eiffel@7"
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
-					"group": "0_gobo-eiffel@8"
+					"group": "gobo-eiffel@8"
 				}
 			]
 		}
