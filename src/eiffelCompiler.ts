@@ -14,14 +14,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	context.subscriptions.push(outputChannel);
 	context.subscriptions.push(goboEiffelDiagnostics);
 
-	const compileAndRunEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileAndRunEiffelFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const compileAndRunEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileAndRunEiffelFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
@@ -50,14 +55,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(compileAndRunEiffelFileCmd);
 
-	const compileEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileEiffelFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const compileEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileEiffelFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
@@ -81,14 +91,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(compileEiffelFileCmd);
 
-	const runEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.runEiffelFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const runEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.runEiffelFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let buildDir = defaultCwd;
 		let args = [];
@@ -115,14 +130,52 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(runEiffelFileCmd);
 
-	const compileAndRunWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileAndRunWithEcfFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const lintEiffelFileCmd = vscode.commands.registerCommand('gobo-eiffel.lintEiffelFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let lintOptions = [];
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Compile Current Eiffel File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			lintOptions = config.compilationOptions ?? [];
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await lintEiffelSystem(filePath, undefined, lintOptions, environmentVariables, context);
+	});
+	context.subscriptions.push(lintEiffelFileCmd);
+
+	const compileAndRunWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileAndRunWithEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
+		}
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
@@ -151,14 +204,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(compileAndRunWithEcfFileCmd);
 
-	const compileWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileWithEcfFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const compileWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileWithEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
@@ -182,14 +240,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(compileWithEcfFileCmd);
 
-	const runWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.runWithEcfFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const runWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.runWithEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let buildDir = defaultCwd;
 		let args = [];
@@ -216,28 +279,71 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(runWithEcfFileCmd);
 
-	const createEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.createEcfFile', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const lintWithEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.lintWithEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let lintOptions = [];
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Compile With Current ECF File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			lintOptions = config.compilationOptions ?? [];
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await lintEiffelSystem(filePath, undefined, lintOptions, environmentVariables, context);
+	});
+	context.subscriptions.push(lintWithEcfFileCmd);
+
+	const createEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.createEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
+		}
 		await createEcfFile(filePath, context);
 	});
 	context.subscriptions.push(createEcfFileCmd);
 
-	const newGoboEiffelTerminalCmd = vscode.commands.registerCommand('gobo-eiffel.newGoboEiffelTerminal', async () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			vscode.window.showErrorMessage('No active editor');
-			return;
+	const newGoboEiffelTerminalCmd = vscode.commands.registerCommand('gobo-eiffel.newGoboEiffelTerminal', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
 		}
-		const doc = editor.document;
-		const filePath = doc.fileName;
 		const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
-		const terminal = await createNewGoboEiffelTerminal(cwd, process.env, context);
+		await createNewGoboEiffelTerminal(cwd, process.env, context);
 	});
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
 }
@@ -365,6 +471,68 @@ export async function compileAndRunEiffelSystem(
 		}
 	});
 	return;
+}
+
+/**
+ * Lint an Eiffel system or an Eiffel file.
+ * See https://stackoverflow.com/questions/8503559/what-is-linting
+ * See https://en.wikipedia.org/wiki/Lint_%28software%29
+ * @param filePath ECF file used to describe the Eiffel system to lint, or Eiffel file to lint
+ * @param ecfTarget Target in ECF file (default: last target in ECF file)
+ * @param lintOptions Command-line options to be passed to the Eiffel Linter
+ * @param env Environment variables for the Linter 
+ * @param context VSCode extension context
+ * @returns the exit code
+ */
+export async function lintEiffelSystem(
+	filePath: string,
+	ecfTarget: string | undefined,
+	lintOptions: string[],
+	env: NodeJS.ProcessEnv,
+	context: vscode.ExtensionContext
+): Promise<number> {
+
+	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
+	if (!goboEiffelPath) {
+		return -1;
+	}
+
+	const gelintPath = path.join(goboEiffelPath, 'bin', 'gelint' + (os.platform() === 'win32' ? '.exe' : ''));
+	try {
+		if (!fs.existsSync(gelintPath)) {
+			throw new Error(`file not found: ${gelintPath}`);
+		}
+		try {
+			fs.accessSync(gelintPath, fs.constants.X_OK);
+		} catch {
+			throw new Error(`file is not executable: ${gelintPath}`);
+		}
+	} catch (err: any) {
+		vscode.window.showErrorMessage(`Failed to launch Gobo Eiffel Lint: ${err.message}`);
+		return -1;
+	}
+
+	goboEiffelDiagnostics.clear();
+	outputChannel.clear();
+	outputChannel.show(true);
+	outputChannel.appendLine(`Linting ${filePath}...`);
+
+	const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+	let error_code: number = 0;
+	try {
+		error_code = await spawnInOutputChannel(
+			gelintPath,
+			((ecfTarget) ? [`--target=${ecfTarget}`] : []).concat([...lintOptions, '--flat', filePath]),
+			cwd,
+			env
+		);
+	} catch (err: any) {
+		if (error_code === 0) {
+			error_code = -1;
+		}
+		vscode.window.showErrorMessage(err.message);
+	}
+	return error_code;
 }
 
 /**
