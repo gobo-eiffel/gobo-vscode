@@ -50,15 +50,15 @@
 		"configuration": {
 			"description": "Gobo Eiffel Settings",
 			"properties": {
-				"gobo-eiffel.goboEiffelPath": {
-					"type": "string",
-					"description": "Path to Gobo Eiffel installation",
-					"default": ""
-				},
 				"gobo-eiffel.automaticUpdateCheck": {
 					"type": "boolean",
 					"description": "Automatically checks for new Gobo Eiffel releases",
 					"default": true
+				},
+				"gobo-eiffel.useNightlyBuild": {
+					"type": "boolean",
+					"description": "Use Gobo Eiffel nightly build",
+					"default": false
 				}
 			}
 		},
@@ -111,6 +111,11 @@
 			{
 				"command": "gobo-eiffel.newGoboEiffelTerminal",
 				"title": "New Gobo Eiffel Terminal",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.selectGoboEiffelInstallation",
+				"title": "Select Gobo Eiffel Installation",
 				"category": "Gobo Eiffel"
 			}
 		],
@@ -459,6 +464,10 @@
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"group": "gobo-eiffel@10"
+				},
+				{
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"group": "gobo-eiffel@11"
 				}
 			],
 			"explorer/context": [
