@@ -77,7 +77,10 @@ export async function executeInTerminal(
 		exeFile = `${prefix}${exeFile}`;
 	}
 	if (program.includes(' ')) {
-		exeFile = `."${exeFile}"`;
+		exeFile = `"${exeFile}"`;
+		if (vscode.env.shell.toLowerCase().includes('powershell')) {
+			exeFile = '.' + exeFile;
+		}
 	}
 	const quoted_args = quote(args).replace(/\-\-([a-zA-Z0-9\-_]+)\\=/g, (_, var1) => {
 		// Make sure that command-line options of the form
