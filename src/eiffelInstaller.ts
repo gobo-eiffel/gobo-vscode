@@ -88,7 +88,7 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 			vscode.window.showErrorMessage('Could not fetch latest Gobo Eiffel release');
 			return;
 		}
-		return await downloadAndInstall(latestRelease.fileUrl, latestRelease.fileName, context);
+		return await downloadAndInstall(latestRelease.fileUrl, latestRelease.fileName, latestRelease.version, context);
 	}
 
 	return; // Cancel
@@ -159,7 +159,7 @@ async function checkForUpdates(goboPath: string, context: vscode.ExtensionContex
 			'Skip'
 		);
 		if (choice === 'Update') {
-			return await downloadAndInstall(latestRelease.fileUrl, latestRelease.fileName, context);
+			return await downloadAndInstall(latestRelease.fileUrl, latestRelease.fileName, latestRelease.version, context);
 		}
 		if (choice === 'Skip') {
 			return goboPath;
@@ -177,7 +177,7 @@ async function checkForUpdates(goboPath: string, context: vscode.ExtensionContex
  * @param context VSCode extension context
  * @returns path to the new installation of Gobo Eiffel, or undefined on error
  */
-async function downloadAndInstall(fileUrl: string, fileName: string, context: vscode.ExtensionContext): Promise<string | undefined> {
+async function downloadAndInstall(fileUrl: string, fileName: string, version: GoboVersion, context: vscode.ExtensionContext): Promise<string | undefined> {
 	const goboPath = getCurrentlySelectedGoboEiffel(context);
 	let dialogOptions: vscode.OpenDialogOptions = {
 		canSelectFiles: false,
@@ -191,7 +191,7 @@ async function downloadAndInstall(fileUrl: string, fileName: string, context: vs
 	if (!installUris || installUris.length === 0) {
 		return;
 	}
-	const installDir = installUris[0].fsPath;
+	const installDir = path.join(installUris[0].fsPath, `gobo-${version.year}.${version.month}.${version.day}+${version.commit}`);
 	try {
 		ensureEmptyDir(installDir); // throws if not empty
 	} catch (err: any) {
