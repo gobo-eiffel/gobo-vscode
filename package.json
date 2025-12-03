@@ -2,7 +2,7 @@
 	"name": "gobo-eiffel",
 	"displayName": "Gobo Eiffel",
 	"description": "Eiffel language support using Gobo Eiffel",
-	"version": "1.0.0",
+	"version": "1.1.0",
 	"publisher": "gobosoft",
 	"author": {
 		"name": "Eric Bezault",
@@ -32,6 +32,7 @@
 				"id": "eiffel",
 				"aliases": [
 					"Eiffel",
+					"eiffel",
 					"e"
 				],
 				"extensions": [
@@ -59,6 +60,16 @@
 					"type": "boolean",
 					"description": "Use Gobo Eiffel nightly build",
 					"default": false
+				},
+				"gobo-eiffel.workspaceEcfFile": {
+					"type": "string",
+					"description": "ECF file to analyze Eiffel classes in current workspace",
+					"default": null
+				},
+				"gobo-eiffel.workspaceEcfTarget": {
+					"type": "string",
+					"description": "Target in ECF file to analyze Eiffel classes in current workspace",
+					"default": null
 				}
 			}
 		},
@@ -115,7 +126,12 @@
 			},
 			{
 				"command": "gobo-eiffel.selectGoboEiffelInstallation",
-				"title": "Select Gobo Eiffel Installation",
+				"title": "Select Gobo Eiffel Installation...",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.restartLanguageServer",
+				"title": "Restart Language Server",
 				"category": "Gobo Eiffel"
 			}
 		],
@@ -474,6 +490,10 @@
 				{
 					"command": "gobo-eiffel.selectGoboEiffelInstallation",
 					"group": "gobo-eiffel@11"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@12"
 				}
 			],
 			"explorer/context": [
@@ -584,7 +604,9 @@
 	},
 	"dependencies": {
 		"7zip-bin": "^5.2.0",
-		"shell-quote": "^1.8.3"
+		"shell-quote": "^1.8.3",
+		"vscode-languageclient": "^9.0.1",
+		"vscode-languageserver-protocol": "^3.17.5"
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",

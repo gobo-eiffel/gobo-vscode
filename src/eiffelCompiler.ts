@@ -721,13 +721,15 @@ async function spawnInOutputChannel(
 				}
 
 				// Real-time update
-				if (needDiagnosticsUpdate) {
+				const diagnosticsOnlyThroughLanguageServer: boolean = true;
+				if (needDiagnosticsUpdate && !diagnosticsOnlyThroughLanguageServer) {
 					goboEiffelDiagnostics.clear();
 					for (const [file, diags] of diagnosticsByFile) {
 						const uri = vscode.Uri.file(file);
 						goboEiffelDiagnostics.set(uri, diags);
 					}
 				}
+				diagnosticsByFile.clear;
 			});
 		}
 

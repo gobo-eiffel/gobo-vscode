@@ -35,9 +35,11 @@ Choose the **root folder** of your installation (the one containing `bin/`, `lib
 
 At any time, you can change the selected installation from the *Command Palette* with the command **Gobo Eiffel: Select Gobo Eiffel Installation**.
 
-
-
 ![Switch To Another Installation](../images/switch_gobo_eiffel_installation.png)
+
+This command is also available from the status bar. Just clik on the *Gobo Eiffel* label which indicates the version of the Eiffel language server currently used:
+
+![Language Server Menu](../images/language_server_menu.gif)
 
 ## ✅ Automatically Check For Updates
 

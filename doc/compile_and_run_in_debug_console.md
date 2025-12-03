@@ -18,7 +18,7 @@ The pre-filled configurations are:
 
 Compilation output appears in the *Output* panel, whereas the compiled executable runs in the *Debug Console* panel.
 
-To run the compiled executable in the *Terminal* panel, use the [commands](compile_and_run_in_terminal.md) available in the *Command Palette* and contextul menus.
+To run the compiled executable in the *Terminal* panel, use the [commands](compile_and_run_in_terminal.md) available in the *Command Palette* and contextual menus.
 
 > ⚠️ **Limitations:** Breakpoints are not currently supported when running an Eiffel system.
 

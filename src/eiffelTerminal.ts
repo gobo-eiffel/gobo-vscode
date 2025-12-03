@@ -78,7 +78,7 @@ export async function executeInTerminal(
 	}
 	if (program.includes(' ')) {
 		exeFile = `"${exeFile}"`;
-		if (vscode.env.shell.toLowerCase().includes('powershell')) {
+		if (/(powershell.exe$|powershell$|pwsh.exe$|pwsh$)/.test(vscode.env.shell.toLowerCase())) {
 			exeFile = '.' + exeFile;
 		}
 	}

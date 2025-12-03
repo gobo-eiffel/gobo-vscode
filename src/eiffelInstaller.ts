@@ -5,6 +5,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import * as https from 'https';
 import { path7za } from '7zip-bin';
+import { restartLanguageServer } from './eiffelLanguageServer';
 import { ensureEmptyDir } from './eiffelUtilities';
 
 export function activateEiffelInstaller(context: vscode.ExtensionContext) {
@@ -50,7 +51,7 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 			let goboFullVersion = '';
 			const goboVersion = await getLocalGoboVersion(goboPath);
 			if (goboVersion) {
-				goboFullVersion = ` (version ${goboVersion.year}.${goboVersion.month}.${goboVersion.day}+${goboVersion.commit})`;
+				goboFullVersion = ` (version ${goboVersion.longVersion})`;
 			}
 			message = `Currently selected Gobo Eiffel installation${goboFullVersion}:\n\n${goboPath}\n\nSwitch to another Gobo Eiffel installation.`;
 		} else {
@@ -77,6 +78,7 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 		if (uris && uris.length > 0) {
 			const chosen = uris[0].fsPath;
 			context.globalState.update('goboEiffelPath', chosen);
+			restartLanguageServer(context);
 			return chosen;
 		}
 		return;
@@ -106,6 +108,9 @@ function getCurrentlySelectedGoboEiffel(context: vscode.ExtensionContext): strin
 	if (!goboPath) {
 		// 2. Check $GOBO
 		goboPath = process.env.GOBO;
+		if (goboPath) {
+			context.globalState.update('goboEiffelPath', goboPath);
+		}
 	}
 	return goboPath;
 }
@@ -147,9 +152,9 @@ async function checkForUpdates(goboPath: string, context: vscode.ExtensionContex
 	}
 
 	const goboVersion = await getLocalGoboVersion(goboPath);
-	const goboFullVersion = ((goboVersion) ? `${goboVersion.year}.${goboVersion.month}.${goboVersion.day})+${goboVersion.commit}` : '');
+	const goboFullVersion = ((goboVersion) ? `${goboVersion.longVersion}` : '');
 	const latestReleaseVersion = latestRelease.version;
-	const latestReleaseFullVersion = `${latestReleaseVersion.year}.${latestReleaseVersion.month}.${latestReleaseVersion.day})+${latestReleaseVersion.commit}`;
+	const latestReleaseFullVersion = `${latestReleaseVersion.longVersion}`;
 
 	if (goboVersion && latestReleaseFullVersion !== goboFullVersion) {
 		const choice = await vscode.window.showInformationMessage(
@@ -282,14 +287,17 @@ async function downloadAndInstall(fileUrl: string, fileName: string, version: Go
 
 	context.globalState.update('goboEiffelPath', installDir);
 	vscode.window.showInformationMessage(`Gobo Eiffel installed in ${installDir}`);
+	restartLanguageServer(context);
 	return installDir;
 }
 
-interface GoboVersion {
+export interface GoboVersion {
 	year: string;
 	month: string;
 	day: string;
-	commit: string
+	commit: string;
+	shortVersion: string;
+	longVersion: string
 }
 
 /**
@@ -297,7 +305,7 @@ interface GoboVersion {
  * @param goboPath folder containing Gobo Eiffel installation
  * @returns version object or undefined on error
  */
-async function getLocalGoboVersion(goboPath: string): Promise<GoboVersion | undefined> {
+export async function getLocalGoboVersion(goboPath: string): Promise<GoboVersion | undefined> {
 	const gecPath = path.join(goboPath, 'bin', 'gec' + (os.platform() === 'win32' ? '.exe' : ''));
 	try {
 		if (!fs.existsSync(gecPath)) {
@@ -323,7 +331,9 @@ async function getLocalGoboVersion(goboPath: string): Promise<GoboVersion | unde
 						year: match[1],
 						month: match[2], 
 						day: match[3],
-						commit: match[4]
+						commit: match[4],
+						shortVersion: `${match[1]}.${match[2]}`,
+						longVersion: `${match[1]}.${match[2]}.${match[3]}+${match[4]}`
 					});
 				} else {
 					resolve(undefined);
@@ -394,7 +404,9 @@ async function fetchLatestRelease(): Promise<{ fileUrl: string; fileName: string
 										year: match[1],
 										month: match[2], 
 										day: match[3],
-										commit: match[4]
+										commit: match[4],
+										shortVersion: `${match[1]}.${match[2]}`,
+										longVersion: `${match[1]}.${match[2]}.${match[3]}+${match[4]}`
 									}
 								});
 							} else {

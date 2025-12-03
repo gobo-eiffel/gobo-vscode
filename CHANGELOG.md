@@ -4,6 +4,22 @@ All notable changes to the **Gobo Eiffel VS Code Extension** will be documented 
 
 ---
 
+## [1.1.0] – 3 December 2025
+
+### Added
+
+* 🧭 **Feature navigation** in the *Outline* panel (jump to features and feature clauses).
+* 📝 **Feature signatures** displayed on hover (types, signatures, variable information).
+* 🔍 **Go to definition** for variables and features.
+* 🧪 **Inline error reporting as you type**, with live squiggles in the editor.
+* ⚙️ **Workspace-only settings**:
+  * `gobo-eiffel.workspaceEcfFile`  
+  * `gobo-eiffel.workspaceEcfTarget`  
+  These allow selecting the ECF file and target used to analyze Eiffel classes in the workspace.
+  Automatic discovery of ECF files in the workspace when no explicit choice is provided.
+
+---
+
 ## [1.0.0] – 1 October 2025
 
 ### Added
