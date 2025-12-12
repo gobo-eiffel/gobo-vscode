@@ -1,6 +1,18 @@
 ﻿# Changelog  
 
-All notable changes to the **Gobo Eiffel VS Code Extension** will be documented here.  
+All notable changes to the **Gobo Eiffel VS Code Extension** will be documented
+here.  
+
+---
+
+## [1.1.1] – 12 December 2025
+
+### Fixed
+
+* 🔧 **Syntax highlighting restored** for Eiffel files in VS Code ≥ **1.107**.  
+  A compatibility issue in recent VS Code versions prevented the extension from
+  loading its grammar definition, resulting in missing or incomplete highlighting.
+  This update ensures the grammar is correctly recognized again.
 
 ---
 
@@ -15,8 +27,9 @@ All notable changes to the **Gobo Eiffel VS Code Extension** will be documented 
 * ⚙️ **Workspace-only settings**:
   * `gobo-eiffel.workspaceEcfFile`  
   * `gobo-eiffel.workspaceEcfTarget`  
-  These allow selecting the ECF file and target used to analyze Eiffel classes in the workspace.
-  Automatic discovery of ECF files in the workspace when no explicit choice is provided.
+  These allow selecting the ECF file and target used to analyze Eiffel classes
+  in the workspace. Automatic discovery of ECF files in the workspace when no
+  explicit choice is provided.
 
 ---
 
