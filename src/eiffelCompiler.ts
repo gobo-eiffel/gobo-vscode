@@ -393,10 +393,19 @@ export async function compileEiffelSystem(
 		return -1;
 	}
 
+	let target = '';
+	if (ecfTarget) {
+		target = `'${ecfTarget}' from `;
+	} else if (!filePath.endsWith('.e')) {
+		const defaultTarget = await getDefaultEcfTarget(filePath, context);
+		if (defaultTarget) {
+			target = `'${defaultTarget}' from `;
+		}
+	}
 	goboEiffelDiagnostics.clear();
 	outputChannel.clear();
 	outputChannel.show(true);
-	outputChannel.appendLine(`Compiling ${filePath}...`);
+	outputChannel.appendLine(`Compiling ${target}${filePath}...`);
 
 	let error_code: number = 0;
 	try {
@@ -518,10 +527,19 @@ export async function lintEiffelSystem(
 		return -1;
 	}
 
+	let target = '';
+	if (ecfTarget) {
+		target = `'${ecfTarget}' from `;
+	} else if (!filePath.endsWith('.e')) {
+		const defaultTarget = await getDefaultEcfTarget(filePath, context);
+		if (defaultTarget) {
+			target = `'${defaultTarget}' from `;
+		}
+	}
 	goboEiffelDiagnostics.clear();
 	outputChannel.clear();
 	outputChannel.show(true);
-	outputChannel.appendLine(`Linting ${filePath}...`);
+	outputChannel.appendLine(`Linting ${target}${filePath}...`);
 
 	const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 	let error_code: number = 0;
@@ -601,6 +619,61 @@ export async function getExecutableName(
 				const match = stdout.match(/^(.*)/);
 				if (match) {
 					resolve(match[1]);
+				} else {
+					resolve(undefined);
+				}
+			}
+		});
+	});
+}
+
+/**
+ * Get the default target in ECF file to be used for Eiffel compilations.
+ * @param filePath ECF file used for the compilation.
+ * @param context VSCode extension context
+ * @returns the target name or undefined on error
+ */
+async function getDefaultEcfTarget(
+	filePath: string, 
+	context: vscode.ExtensionContext
+): Promise<string | undefined> {
+
+	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
+	if (!goboEiffelPath) {
+		return undefined;
+	}
+	const gedocPath = path.join(goboEiffelPath, 'bin', 'gedoc' + (os.platform() === 'win32' ? '.exe' : ''));
+	try {
+		if (!fs.existsSync(gedocPath)) {
+			throw new Error(`File not found: ${gedocPath}`);
+		}
+		try {
+			fs.accessSync(gedocPath, fs.constants.X_OK);
+		} catch {
+			throw new Error(`File is not executable: ${gedocPath}`);
+		}
+	} catch (err: any) {
+		return;
+	}
+	return new Promise((resolve) => {
+		cp.exec(`"${gedocPath}" --format=available_targets --no-benchmark "${filePath}"`, (err, stdout) => {
+			if (err) {
+				resolve(undefined);
+			} else {
+				let outBuffer = '';
+				outBuffer += stdout.replace(/\r/g, '');
+				let idx: number;
+				let target: string | undefined;
+				while ((idx = outBuffer.indexOf('\n')) !== -1) {
+					const line = outBuffer.slice(0, idx);
+					outBuffer = outBuffer.slice(idx + 1);
+					const match = line.match(/^(.*)/);
+					if (match) {
+						target = match[1];
+					}
+				}
+				if (target) {
+					resolve(target);
 				} else {
 					resolve(undefined);
 				}
