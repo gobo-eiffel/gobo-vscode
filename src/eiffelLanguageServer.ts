@@ -2,12 +2,15 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
-import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, State, Trace } from 'vscode-languageclient/node';
+import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, NotificationType } from 'vscode-languageclient/node';
 import { getOrInstallOrUpdateGoboEiffel, selectOrDownloadAndInstall, getLocalGoboVersion, GoboVersion } from './eiffelInstaller';
 
 let server: LanguageClient | undefined;
 const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 let goboEiffelVersion: GoboVersion | undefined;
+const eiffelBusyNotification = new NotificationType<{}>("$/goboEiffel/busy");
+const eiffelNotBusyNotification = new NotificationType<{}>("$/goboEiffel/notBusy");
+const eiffelRestartNotification = new NotificationType<{}>("$/goboEiffel/restart");
 
 export function activateEiffelLanguageServer(context: vscode.ExtensionContext) {
 	// StatusBarItem for the status of the Gobo Eiffel Language Server.
@@ -120,9 +123,20 @@ export async function startLanguageServer(context: vscode.ExtensionContext, rest
 	// server.setTrace(Trace.Verbose);
 	context.subscriptions.push(server);
 
+	server.onNotification(eiffelBusyNotification, () => {
+		statusItem.text = `$(sync~spin) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
+	});
+
+	server.onNotification(eiffelNotBusyNotification, () => {
+		statusItem.text = `$(check) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
+	});
+
+	server.onNotification(eiffelRestartNotification, () => {
+		restartLanguageServer(context);
+	});
+
 	// Start server and update status bar
 	server.start().then(() => {
-		statusItem.text = `$(check) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 		statusItem.tooltip = `Eiffel Language Server is running\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to restart or select another version...`;
 	}).catch((err) => {
 		vscode.window.showErrorMessage(`Gobo Eiffel Language Server failed to start: ${err.message}`);
