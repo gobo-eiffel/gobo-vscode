@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, NotificationType } from 'vscode-languageclient/node';
 import { getOrInstallOrUpdateGoboEiffel, selectOrDownloadAndInstall, getLocalGoboVersion, GoboVersion } from './eiffelInstaller';
 
-let server: LanguageClient | undefined;
+let client: LanguageClient | undefined;
 const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
 let goboEiffelVersion: GoboVersion | undefined;
 const eiffelBusyNotification = new NotificationType<{}>("$/goboEiffel/busy");
@@ -57,7 +57,8 @@ export async function deactivateEiffelLanguageServer() {
 }
 
 let startingLanguageServer: boolean = false;
-const outputChannel = vscode.window.createOutputChannel("Gobo Eiffel LSP Trace");
+const outputChannel = vscode.window.createOutputChannel("Gobo Eiffel LSP");
+const traceOutputChannel = vscode.window.createOutputChannel("Gobo Eiffel LSP Trace");
 
 
 export async function startLanguageServer(context: vscode.ExtensionContext, restart: boolean = false) {
@@ -110,33 +111,32 @@ export async function startLanguageServer(context: vscode.ExtensionContext, rest
 		synchronize: {
 			fileEvents: vscode.workspace.createFileSystemWatcher('**/*.e')
 		},
-		outputChannelName: "Gobo Eiffel LSP",
-		traceOutputChannel: outputChannel
+		outputChannel: outputChannel,
+		traceOutputChannel: traceOutputChannel
 	};
 
-	server = new LanguageClient(
+	client = new LanguageClient(
 		'goboEiffelLsp',
 		'Gobo Eiffel Language Server',
 		serverOptions,
 		clientOptions
 	);
-	// server.setTrace(Trace.Verbose);
-	context.subscriptions.push(server);
+	context.subscriptions.push(client);
 
-	server.onNotification(eiffelBusyNotification, () => {
+	client.onNotification(eiffelBusyNotification, () => {
 		statusItem.text = `$(sync~spin) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 	});
 
-	server.onNotification(eiffelNotBusyNotification, () => {
+	client.onNotification(eiffelNotBusyNotification, () => {
 		statusItem.text = `$(check) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 	});
 
-	server.onNotification(eiffelRestartNotification, () => {
+	client.onNotification(eiffelRestartNotification, () => {
 		restartLanguageServer(context);
 	});
 
 	// Start server and update status bar
-	server.start().then(() => {
+	client.start().then(() => {
 		statusItem.tooltip = `Eiffel Language Server is running\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to restart or select another version...`;
 	}).catch((err) => {
 		vscode.window.showErrorMessage(`Gobo Eiffel Language Server failed to start: ${err.message}`);
@@ -151,13 +151,13 @@ export async function restartLanguageServer(context: vscode.ExtensionContext) {
 }
 
 export async function stopLanguageServer() {
-	if (server) {
-		const oldServer = server;
-		server = undefined;
+	if (client) {
+		const oldClient = client;
+		client = undefined;
 		// The `stop` call will send the "shutdown" notification to the LSP.
-		await oldServer.stop();
+		await oldClient.stop();
 		// The `dipose` call will send the "exit" request to the LSP which actually tells the child process to exit.
-		await oldServer.dispose();
+		await oldClient.dispose();
 
 	}
 	statusItem.text = `$(circle-slash) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
