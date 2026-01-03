@@ -352,6 +352,54 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		await createNewGoboEiffelTerminal(cwd, process.env, context);
 	});
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
+
+	const selectAsWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectAsWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		let filePath: string;
+		if (uri) {
+			// Command invoked from the Explorer context menu.
+			filePath = uri.fsPath;
+		} else {
+			const editor = vscode.window.activeTextEditor;
+			if (!editor) {
+				vscode.window.showErrorMessage('No active editor');
+				return;
+			}
+			filePath = editor.document.uri.fsPath;
+		}
+
+		const ecfTargets = await getAllEcfTargets(filePath, context);
+		if (!ecfTargets) {
+			return;
+		}
+
+		let selectedTarget = undefined;
+		switch (ecfTargets.length) {
+			case 0:
+				selectedTarget = "";
+				break;
+			case 1:
+				selectedTarget = ecfTargets[0];
+				break;
+			default:
+				selectedTarget = await vscode.window.showQuickPick(
+					ecfTargets,
+					{
+						title: 'Select ECF target',
+						placeHolder:  'Select ECF target',
+						canPickMany: false
+					}
+				);
+		}
+		if (selectedTarget) {
+			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfFile', filePath, vscode.ConfigurationTarget.Workspace);
+			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfTarget', selectedTarget, vscode.ConfigurationTarget.Workspace);
+			vscode.commands.executeCommand(
+				'workbench.action.openWorkspaceSettings',
+				'ext:gobo-eiffel.workspaceEcf'
+			);
+		}
+	});
+	context.subscriptions.push(selectAsWorkspaceEcfFileCmd);
 }
 
 /**
@@ -619,6 +667,65 @@ export async function getExecutableName(
 				const match = stdout.match(/^(.*)/);
 				if (match) {
 					resolve(match[1]);
+				} else {
+					resolve(undefined);
+				}
+			}
+		});
+	});
+}
+
+/**
+ * Get all targets in ECF file to be used for Eiffel compilations.
+ * @param filePath ECF file used for the compilation.
+ * @param context VSCode extension context
+ * @returns the target name or undefined on error
+ */
+async function getAllEcfTargets(
+	filePath: string, 
+	context: vscode.ExtensionContext
+): Promise<string[] | undefined> {
+
+	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
+	if (!goboEiffelPath) {
+		return undefined;
+	}
+	const gedocPath = path.join(goboEiffelPath, 'bin', 'gedoc' + (os.platform() === 'win32' ? '.exe' : ''));
+	try {
+		if (!fs.existsSync(gedocPath)) {
+			throw new Error(`File not found: ${gedocPath}`);
+		}
+		try {
+			fs.accessSync(gedocPath, fs.constants.X_OK);
+		} catch {
+			throw new Error(`File is not executable: ${gedocPath}`);
+		}
+	} catch (err: any) {
+		return;
+	}
+	return new Promise((resolve) => {
+		cp.exec(`"${gedocPath}" --format=available_targets --no-benchmark "${filePath}"`, (err, stdout) => {
+			if (err) {
+				resolve(undefined);
+			} else {
+				let outBuffer = '';
+				outBuffer += stdout.replace(/\r/g, '');
+				let idx: number;
+				let targets: string[] | undefined;
+				while ((idx = outBuffer.indexOf('\n')) !== -1) {
+					const line = outBuffer.slice(0, idx);
+					outBuffer = outBuffer.slice(idx + 1);
+					const match = line.match(/^(.*)/);
+					if (match) {
+						if (targets) {
+							targets = [...targets, match[1]];
+						} else {
+							targets = [match[1]];
+						}
+					}
+				}
+				if (targets) {
+					resolve(targets);
 				} else {
 					resolve(undefined);
 				}
