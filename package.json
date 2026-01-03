@@ -125,6 +125,11 @@
 				"category": "Gobo Eiffel"
 			},
 			{
+				"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+				"title": "Select Current ECF file As Workspace ECF File",
+				"category": "Gobo Eiffel"
+			},
+			{
 				"command": "gobo-eiffel.selectGoboEiffelInstallation",
 				"title": "Select Gobo Eiffel Installation...",
 				"category": "Gobo Eiffel"
@@ -488,12 +493,17 @@
 					"group": "gobo-eiffel@10"
 				},
 				{
-					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
 					"group": "gobo-eiffel@11"
 				},
 				{
-					"command": "gobo-eiffel.restartLanguageServer",
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
 					"group": "gobo-eiffel@12"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@13"
 				}
 			],
 			"explorer/context": [
@@ -546,6 +556,11 @@
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
 					"group": "gobo-eiffel@10"
+				},
+				{
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@11"
 				}
 			],
 			"editor/context": [
@@ -598,6 +613,11 @@
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
 					"group": "gobo-eiffel@10"
+				},
+				{
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@11"
 				}
 			]
 		}
