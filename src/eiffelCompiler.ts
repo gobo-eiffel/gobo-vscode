@@ -354,18 +354,19 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
 
 	const selectAsWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectAsWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
-		let filePath: string;
+		let fileUri = undefined;
 		if (uri) {
 			// Command invoked from the Explorer context menu.
-			filePath = uri.fsPath;
+			fileUri = uri;
 		} else {
 			const editor = vscode.window.activeTextEditor;
 			if (!editor) {
 				vscode.window.showErrorMessage('No active editor');
 				return;
 			}
-			filePath = editor.document.uri.fsPath;
+			fileUri = editor.document.uri;
 		}
+		let filePath = fileUri.fsPath;
 
 		const ecfTargets = await getAllEcfTargets(filePath, context);
 		if (!ecfTargets) {
@@ -391,6 +392,9 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 				);
 		}
 		if (selectedTarget) {
+			if (vscode.workspace.getWorkspaceFolder(fileUri)) {
+				filePath = vscode.workspace.asRelativePath(fileUri, false).replace(/\\/g, '/');
+			}
 			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfFile', filePath, vscode.ConfigurationTarget.Workspace);
 			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfTarget', selectedTarget, vscode.ConfigurationTarget.Workspace);
 			vscode.commands.executeCommand(
