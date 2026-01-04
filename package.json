@@ -120,13 +120,13 @@
 				"category": "Gobo Eiffel"
 			},
 			{
-				"command": "gobo-eiffel.newGoboEiffelTerminal",
-				"title": "New Gobo Eiffel Terminal",
+				"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+				"title": "Select Current File As Workspace ECF File",
 				"category": "Gobo Eiffel"
 			},
 			{
-				"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-				"title": "Select Current ECF file As Workspace ECF File",
+				"command": "gobo-eiffel.newGoboEiffelTerminal",
+				"title": "New Gobo Eiffel Terminal",
 				"category": "Gobo Eiffel"
 			},
 			{
@@ -441,7 +441,79 @@
 				}
 			}
 		],
+		"submenus": [
+			{
+				"id": "gobo-eiffel.compileAndRunSubmenu",
+				"label": "Compile & Run"
+			},
+			{
+				"id": "gobo-eiffel.eiffelConfigurationSubmenu",
+				"label": "Eiffel Configuration"
+			}
+		],
 		"menus": {
+			"gobo-eiffel.compileAndRunSubmenu": [
+				{
+					"command": "gobo-eiffel.compileAndRunEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "gobo-eiffel@1"
+				},
+				{
+					"command": "gobo-eiffel.compileEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "gobo-eiffel@2"
+				},
+				{
+					"command": "gobo-eiffel.runEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "gobo-eiffel@3"
+				},
+				{
+					"command": "gobo-eiffel.lintEiffelFile",
+					"when": "resourceExtname == .e",
+					"group": "gobo-eiffel@4"
+				},
+				{
+					"command": "gobo-eiffel.compileAndRunWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@5"
+				},
+				{
+					"command": "gobo-eiffel.compileWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@6"
+				},
+				{
+					"command": "gobo-eiffel.runWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@7"
+				},
+				{
+					"command": "gobo-eiffel.lintWithEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@8"
+				}
+			],
+			"gobo-eiffel.eiffelConfigurationSubmenu": [
+				{
+					"command": "gobo-eiffel.createEcfFile",
+					"when": "resourceExtname == .e",
+					"group": "gobo-eiffel@2"
+				},
+				{
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
+					"group": "gobo-eiffel@2"
+				},
+				{
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"group": "gobo-eiffel@3"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@4"
+				}
+			],
 			"commandPalette": [
 				{
 					"command": "gobo-eiffel.compileAndRunEiffelFile",
@@ -489,12 +561,12 @@
 					"group": "gobo-eiffel@9"
 				},
 				{
-					"command": "gobo-eiffel.newGoboEiffelTerminal",
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
 					"group": "gobo-eiffel@10"
 				},
 				{
-					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-					"when": "resourceExtname == .ecf",
+					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"group": "gobo-eiffel@11"
 				},
 				{
@@ -508,116 +580,34 @@
 			],
 			"explorer/context": [
 				{
-					"command": "gobo-eiffel.compileAndRunEiffelFile",
-					"when": "resourceExtname == .e",
+					"submenu": "gobo-eiffel.compileAndRunSubmenu",
+					"when": "resourceExtname == .e || resourceExtname == .ecf",
 					"group": "gobo-eiffel@1"
 				},
 				{
-					"command": "gobo-eiffel.compileEiffelFile",
-					"when": "resourceExtname == .e",
+					"submenu": "gobo-eiffel.eiffelConfigurationSubmenu",
 					"group": "gobo-eiffel@2"
-				},
-				{
-					"command": "gobo-eiffel.runEiffelFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@3"
-				},
-				{
-					"command": "gobo-eiffel.lintEiffelFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@4"
-				},
-				{
-					"command": "gobo-eiffel.compileAndRunWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@5"
-				},
-				{
-					"command": "gobo-eiffel.compileWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@6"
-				},
-				{
-					"command": "gobo-eiffel.runWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@7"
-				},
-				{
-					"command": "gobo-eiffel.lintWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@8"
-				},
-				{
-					"command": "gobo-eiffel.createEcfFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@9"
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
-					"group": "gobo-eiffel@10"
-				},
-				{
-					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@11"
+					"group": "gobo-eiffel@3"
 				}
 			],
 			"editor/context": [
 				{
-					"command": "gobo-eiffel.compileAndRunEiffelFile",
-					"when": "resourceExtname == .e",
+					"submenu": "gobo-eiffel.compileAndRunSubmenu",
+					"when": "resourceExtname == .e || resourceExtname == .ecf",
 					"group": "gobo-eiffel@1"
 				},
 				{
-					"command": "gobo-eiffel.compileEiffelFile",
-					"when": "resourceExtname == .e",
+					"submenu": "gobo-eiffel.eiffelConfigurationSubmenu",
 					"group": "gobo-eiffel@2"
-				},
-				{
-					"command": "gobo-eiffel.runEiffelFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@3"
-				},
-				{
-					"command": "gobo-eiffel.lintEiffelFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@4"
-				},
-				{
-					"command": "gobo-eiffel.compileAndRunWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@5"
-				},
-				{
-					"command": "gobo-eiffel.compileWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@6"
-				},
-				{
-					"command": "gobo-eiffel.runWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@7"
-				},
-				{
-					"command": "gobo-eiffel.lintWithEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@8"
-				},
-				{
-					"command": "gobo-eiffel.createEcfFile",
-					"when": "resourceExtname == .e",
-					"group": "gobo-eiffel@9"
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
-					"group": "gobo-eiffel@10"
-				},
-				{
-					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-					"when": "resourceExtname == .ecf",
-					"group": "gobo-eiffel@11"
+					"group": "gobo-eiffel@3"
 				}
 			]
 		}
