@@ -120,6 +120,16 @@
 				"category": "Gobo Eiffel"
 			},
 			{
+				"command": "gobo-eiffel.showWorkspaceEcfFile",
+				"title": "Show Workspace ECF File",
+				"category": "Gobo Eiffel"
+			},
+			{
+				"command": "gobo-eiffel.selectWorkspaceEcfFile",
+				"title": "Select Workspace ECF File...",
+				"category": "Gobo Eiffel"
+			},
+			{
 				"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
 				"title": "Select Current File As Workspace ECF File",
 				"category": "Gobo Eiffel"
@@ -501,17 +511,26 @@
 					"group": "gobo-eiffel@2"
 				},
 				{
-					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-					"when": "resourceExtname == .ecf",
+					"command": "gobo-eiffel.showWorkspaceEcfFile",
+					"when": "gobo-eiffel.hasWorkspaceEcfFile",
 					"group": "gobo-eiffel@2"
 				},
 				{
-					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"command": "gobo-eiffel.selectWorkspaceEcfFile",
 					"group": "gobo-eiffel@3"
 				},
 				{
-					"command": "gobo-eiffel.restartLanguageServer",
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
 					"group": "gobo-eiffel@4"
+				},
+				{
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"group": "gobo-eiffel@5"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@6"
 				}
 			],
 			"commandPalette": [
@@ -561,21 +580,30 @@
 					"group": "gobo-eiffel@9"
 				},
 				{
-					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
-					"when": "resourceExtname == .ecf",
+					"command": "gobo-eiffel.showWorkspaceEcfFile",
+					"when": "gobo-eiffel.hasWorkspaceEcfFile",
 					"group": "gobo-eiffel@10"
 				},
 				{
-					"command": "gobo-eiffel.newGoboEiffelTerminal",
+					"command": "gobo-eiffel.selectWorkspaceEcfFile",
 					"group": "gobo-eiffel@11"
 				},
 				{
-					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"command": "gobo-eiffel.selectAsWorkspaceEcfFile",
+					"when": "resourceExtname == .ecf",
 					"group": "gobo-eiffel@12"
 				},
 				{
-					"command": "gobo-eiffel.restartLanguageServer",
+					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"group": "gobo-eiffel@13"
+				},
+				{
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"group": "gobo-eiffel@14"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@15"
 				}
 			],
 			"explorer/context": [
@@ -590,7 +618,6 @@
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
-					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
 					"group": "gobo-eiffel@3"
 				}
 			],
@@ -606,7 +633,6 @@
 				},
 				{
 					"command": "gobo-eiffel.newGoboEiffelTerminal",
-					"when": "resourceExtname == .e || resourceExtname == .ecf || resourceExtname == .eant",
 					"group": "gobo-eiffel@3"
 				}
 			]

@@ -348,10 +348,18 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			}
 			filePath = editor.document.uri.fsPath;
 		}
-		const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		const cwd = ((fs.existsSync(filePath)) ? (fs.statSync(filePath).isDirectory() ? filePath : path.dirname(filePath)) : '.');
 		await createNewGoboEiffelTerminal(cwd, process.env, context);
 	});
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
+
+	const selectWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		vscode.commands.executeCommand(
+			'workbench.action.openWorkspaceSettings',
+			'ext:gobo-eiffel.workspaceEcf'
+		);
+	});
+	context.subscriptions.push(selectWorkspaceEcfFileCmd);
 
 	const selectAsWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectAsWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
 		let fileUri = undefined;
@@ -404,6 +412,24 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(selectAsWorkspaceEcfFileCmd);
+
+	const showWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.showWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		const filePath = getWorkspaceEcfFile();
+		if (!filePath) {
+			vscode.window.showErrorMessage('No workspace ECF file selected');
+			return;
+		}
+		const fileUri = vscode.Uri.file(filePath);
+		try {
+			const doc = await vscode.workspace.openTextDocument(fileUri); // load the file
+			await vscode.window.showTextDocument(doc); // show in editor
+		} catch (err) {
+			vscode.window.showErrorMessage(`Failed to open file: ${err}`);
+		}
+	});
+	context.subscriptions.push(showWorkspaceEcfFileCmd);
+	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(updateHasWorkspaceEcfFileContext));
+	updateHasWorkspaceEcfFileContext();
 }
 
 /**
@@ -680,10 +706,41 @@ export async function getExecutableName(
 }
 
 /**
+ * Get the full pathname of the workspace ECF file, if any.
+ * @returns the full pathname or undefined on error
+ */
+function getWorkspaceEcfFile(): string | undefined {
+	let filePath = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfFile');
+	if (!filePath) {
+		return undefined;
+	}
+	if (filePath.length === 0) {
+		return undefined;
+	}
+	if (path.isAbsolute(filePath)) {
+		return filePath;
+	}
+	const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+	if (!workspaceFolder) {
+		// No workspace open.
+		return undefined;
+	}
+	return path.join(workspaceFolder.uri.fsPath, filePath);
+}
+
+/**
+ * Update the context key `gobo-eiffel.hasWorkspaceEcfFile`
+ * which is used to show/hide menus.
+ */
+function updateHasWorkspaceEcfFileContext() {
+	vscode.commands.executeCommand('setContext', 'gobo-eiffel.hasWorkspaceEcfFile', !!getWorkspaceEcfFile());
+}
+
+/**
  * Get all targets in ECF file to be used for Eiffel compilations.
  * @param filePath ECF file used for the compilation.
  * @param context VSCode extension context
- * @returns the target name or undefined on error
+ * @returns the target names or undefined on error
  */
 async function getAllEcfTargets(
 	filePath: string, 
