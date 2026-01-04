@@ -77,7 +77,7 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 		const uris = await vscode.window.showOpenDialog(dialogOptions);
 		if (uris && uris.length > 0) {
 			const chosen = uris[0].fsPath;
-			context.globalState.update('goboEiffelPath', chosen);
+			context.globalState.update(getGoboEiffelPathKey(), chosen);
 			restartLanguageServer(context);
 			return chosen;
 		}
@@ -104,15 +104,49 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 function getCurrentlySelectedGoboEiffel(context: vscode.ExtensionContext): string | undefined {
 	let goboPath: string | undefined;
 	// 1. Check previously stored path
-	goboPath = context.globalState.get<string>('goboEiffelPath');
+	goboPath = context.globalState.get<string>(getGoboEiffelPathKey());
+	if (!goboPath) {
+		goboPath = context.globalState.get<string>('goboEiffelPath');
+		if (goboPath) {
+			context.globalState.update(getGoboEiffelPathKey(), goboPath);
+		}
+	}
 	if (!goboPath) {
 		// 2. Check $GOBO
 		goboPath = process.env.GOBO;
 		if (goboPath) {
-			context.globalState.update('goboEiffelPath', goboPath);
+			context.globalState.update(getGoboEiffelPathKey(), goboPath);
 		}
 	}
 	return goboPath;
+}
+
+/**
+ * Get the key to get goboEiffelPath in globalState.
+ * @returns key to get goboEiffelPath in globalState.
+ */
+function getGoboEiffelPathKey(): string {
+	const nodePlatform = os.platform();
+	let platformForPackage: string;
+	if (nodePlatform === 'win32') {
+		platformForPackage = 'windows';
+	} else if (nodePlatform === 'darwin') {
+		platformForPackage = 'macos';
+	} else if (nodePlatform === 'linux') {
+		platformForPackage = 'linux';
+	} else {
+		platformForPackage = nodePlatform; // fallback
+	}
+	const nodeArch = os.arch();
+	let archForPackage: string;
+	if (nodeArch === 'x64') {
+		archForPackage = 'x86_64';
+	} else if (nodeArch === 'arm64') {
+		archForPackage = 'arm64';
+	} else {
+		archForPackage = nodeArch;
+	}
+	return `goboEiffelPath-${platformForPackage}-${archForPackage}`;
 }
 
 // How long to wait between checks (ms)
@@ -285,7 +319,7 @@ async function downloadAndInstall(fileUrl: string, fileName: string, version: Go
 		return;
 	}
 
-	context.globalState.update('goboEiffelPath', installDir);
+	context.globalState.update(getGoboEiffelPathKey(), installDir);
 	vscode.window.showInformationMessage(`Gobo Eiffel installed in ${installDir}`);
 	restartLanguageServer(context);
 	return installDir;
