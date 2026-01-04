@@ -318,6 +318,132 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(lintWithEcfFileCmd);
 
+	const compileAndRunWithWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileAndRunWithWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		const filePath = getWorkspaceEcfFile();
+		if (!filePath) {
+			vscode.window.showErrorMessage('No workspace ECF file selected');
+			return;
+		}
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let ecfTarget = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfTarget');
+		let compilationOptions = [];
+		let buildDir = defaultCwd;
+		let args = [];
+		let workingDir = defaultCwd;
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Compile & Run With Workspace ECF File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			compilationOptions = config.compilationOptions ?? [];
+			const configBuildDir = config.buildDir;
+			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
+			args = config.args ?? [];
+			const configWorkingDir = config.workingDir;
+			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await compileAndRunEiffelSystem(filePath, ecfTarget, compilationOptions, buildDir, args, workingDir, environmentVariables, context);
+	});
+	context.subscriptions.push(compileAndRunWithWorkspaceEcfFileCmd);
+
+	const compileWithWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.compileWithWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		const filePath = getWorkspaceEcfFile();
+		if (!filePath) {
+			vscode.window.showErrorMessage('No workspace ECF file selected');
+			return;
+		}
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let ecfTarget = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfTarget');
+		let compilationOptions = [];
+		let buildDir = defaultCwd;
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Compile With Workspace ECF File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			ecfTarget = config.ecfTarget;
+			compilationOptions = config.compilationOptions ?? [];
+			const configBuildDir = config.buildDir;
+			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await compileEiffelSystem(filePath, ecfTarget, compilationOptions, buildDir, environmentVariables, context);
+	});
+	context.subscriptions.push(compileWithWorkspaceEcfFileCmd);
+
+	const runWithWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.runWithWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		const filePath = getWorkspaceEcfFile();
+		if (!filePath) {
+			vscode.window.showErrorMessage('No workspace ECF file selected');
+			return;
+		}
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let ecfTarget = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfTarget');
+		let buildDir = defaultCwd;
+		let args = [];
+		let workingDir = defaultCwd;
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Run With Workspace ECF File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			ecfTarget = config.ecfTarget;
+			const configBuildDir = config.buildDir;
+			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
+			args = config.args ?? [];
+			const configWorkingDir = config.workingDir;
+			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await runEiffelSystemInTerminal(filePath, ecfTarget, buildDir, args, workingDir, environmentVariables, context);
+	});
+	context.subscriptions.push(runWithWorkspaceEcfFileCmd);
+
+	const lintWithWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.lintWithWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		const filePath = getWorkspaceEcfFile();
+		if (!filePath) {
+			vscode.window.showErrorMessage('No workspace ECF file selected');
+			return;
+		}
+		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
+		let lintOptions = [];
+		let environmentVariables = process.env;
+
+		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
+		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
+		const configName = 'Compile With Workspace ECF File';
+		const config = eiffelConfigs.find(c => c.name === configName);
+		if (config) {
+			lintOptions = config.compilationOptions ?? [];
+			const userEnv = config.environmentVariables ?? {};
+			environmentVariables = {...process.env, ...userEnv};
+		} else {
+			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
+		}
+
+		await lintEiffelSystem(filePath, undefined, lintOptions, environmentVariables, context);
+	});
+	context.subscriptions.push(lintWithWorkspaceEcfFileCmd);
+
 	const createEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.createEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
 		let filePath: string;
 		if (uri) {
@@ -712,9 +838,6 @@ export async function getExecutableName(
 function getWorkspaceEcfFile(): string | undefined {
 	let filePath = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfFile');
 	if (!filePath) {
-		return undefined;
-	}
-	if (filePath.length === 0) {
 		return undefined;
 	}
 	if (path.isAbsolute(filePath)) {
