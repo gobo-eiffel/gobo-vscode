@@ -52,6 +52,6 @@ if ($Version) {
 	$GOBO_VERSION = "0.0.0-$GOBO_DATE+$GOBO_SHA1"
 }
 $GOBO_VERSION = '$1' + """$GOBO_VERSION"""
-$GOBO_PATTERN = "(\""name\"": \""gobo-eiffel\"",\r?\n\t*\""version\"": )\""[0-9]+(\.[0-9]+){2}(\-[0-9a-zA-Z]+)?\+[0-9a-zA-Z]+)?\"""
+$GOBO_PATTERN = "(\""name\"": \""gobo-eiffel\"",\r?\n\t*\""version\"": )\""[0-9]+(\.[0-9]+){2}(\-[0-9a-zA-Z]+)?(\+[0-9a-zA-Z]+)?\"""
 
 (Get-Content -Raw "$FilePath") | Foreach-Object { $_ -replace "$GOBO_PATTERN", $GOBO_VERSION } | Set-Content -NoNewLine "$FilePath"
