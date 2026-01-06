@@ -43,15 +43,15 @@ if ($Version) {
 		exit $LastExitCode
 	}
 	$GOBO_DATE = [datetime]$GOBO_DATE
-	$GOBO_DATE = $GOBO_DATE.ToUniversalTime().ToString("yy.M.d")
+	$GOBO_DATE = $GOBO_DATE.ToUniversalTime().ToString("yyyyMMdd")
 	$GOBO_SHA1 = git rev-parse --short HEAD
 	if ($LastExitCode -ne 0) {
 		Write-Error "Command 'git rev-parse --short HEAD' exited with code $LastExitCode"
 		exit $LastExitCode
 	}
-	$GOBO_VERSION = "$GOBO_DATE+$GOBO_SHA1"
+	$GOBO_VERSION = "0.0.0-$GOBO_DATE+$GOBO_SHA1"
 }
 $GOBO_VERSION = '$1' + """$GOBO_VERSION"""
-$GOBO_PATTERN = "(\""name\"": \""gobo-eiffel\"",\r?\n\t*\""version\"": )\""[0-9a-zA-Z]{1,2}(\.[0-9a-zA-Z]{1,2}){2}(\+[0-9a-zA-Z]{7})?\"""
+$GOBO_PATTERN = "(\""name\"": \""gobo-eiffel\"",\r?\n\t*\""version\"": )\""[0-9]+(\.[0-9]+){2}(\-[0-9a-zA-Z]+)?\+[0-9a-zA-Z]+)?\"""
 
 (Get-Content -Raw "$FilePath") | Foreach-Object { $_ -replace "$GOBO_PATTERN", $GOBO_VERSION } | Set-Content -NoNewLine "$FilePath"
