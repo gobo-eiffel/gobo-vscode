@@ -27,14 +27,16 @@ if ($LastExitCode -ne 0) {
 	exit $LastExitCode
 }
 
-npm install -g vsce
+# Install dependencies.
+npm ci
 if ($LastExitCode -ne 0) {
-	Write-Error "Command 'npm install -g vsce' exited with code $LastExitCode"
+	Write-Error "Command 'npm ci' exited with code $LastExitCode"
 	exit $LastExitCode
 }
 
-vsce package
+# Package extension.
+npx vsce package --no-dependencies
 if ($LastExitCode -ne 0) {
-	Write-Error "Command 'vsce package' exited with code $LastExitCode"
+	Write-Error "Command 'npx vsce package --no-dependencies' exited with code $LastExitCode"
 	exit $LastExitCode
 }
