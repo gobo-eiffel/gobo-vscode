@@ -1,8 +1,8 @@
-{
+﻿{
 	"name": "gobo-eiffel",
+	"version": "0.0.0+xxxxxxx",
 	"displayName": "Gobo Eiffel",
 	"description": "Eiffel language support using Gobo Eiffel",
-	"version": "1.1.1",
 	"publisher": "gobosoft",
 	"author": {
 		"name": "Eric Bezault",
