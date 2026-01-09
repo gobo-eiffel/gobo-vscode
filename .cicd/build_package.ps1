@@ -35,8 +35,8 @@ if ($LastExitCode -ne 0) {
 }
 
 # Package extension.
-npx vsce package --no-dependencies
+npx vsce package
 if ($LastExitCode -ne 0) {
-	Write-Error "Command 'npx vsce package --no-dependencies' exited with code $LastExitCode"
+	Write-Error "Command 'npx vsce package' exited with code $LastExitCode"
 	exit $LastExitCode
 }
