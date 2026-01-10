@@ -5,6 +5,47 @@ here.
 
 ---
 
+## [1.2.0] – 11 January 2026
+
+### Added
+
+* 🧭 **Extended code navigation support** tailored to Eiffel:
+  * **Go to Type Definition** to jump directly to the class defining a symbol’s type.
+  * **Go to Implementations** to explore feature precursors and redeclarations across inheritance hierarchies.
+  * **Class and feature search** integrated with standard VS Code symbol navigation.
+
+* ⚙️ **Improved workspace ECF handling and documentation**:
+  * Dedicated documentation page describing how the workspace ECF file and target
+    are used by the Eiffel analyzer.
+  * Commands to **select**, **show**, and **set** a workspace ECF file directly
+    from contextual menus.
+  * New compile, run, and lint commands that explicitly use the **workspace ECF**:
+    * **Compile & Run With Workspace ECF File**
+    * **Compile With Workspace ECF File**
+    * **Run With Workspace ECF File**
+    * **Lint With Workspace ECF File**
+  * Clearer behavior when no ECF file or target is explicitly specified.
+
+### Improved
+
+* 🧩 **Contextual menu reorganization**:
+  * Compile-related commands are now grouped under a **Compile & Run** submenu.
+  * ECF-related commands are grouped under a new **Eiffel Configuration** submenu.
+  * This makes contextual menus shorter, clearer, and easier to navigate.
+
+* 📖 **Documentation and README improvements**:
+  * Reorganized README with a clear separation between feature highlights
+    and detailed Eiffel-specific capabilities.
+  * New **Code Navigation** section explaining navigation features in context.
+  * Better onboarding guidance for both beginners and advanced users,
+    including clearer explanations of workspace ECF usage.
+  * Cross-linked documentation pages for easier discovery of related
+    commands and settings.
+  * Improved Markdown formatting for readability and Markdownlint
+    compliance.
+
+---
+
 ## [1.1.1] – 12 December 2025
 
 ### Fixed
