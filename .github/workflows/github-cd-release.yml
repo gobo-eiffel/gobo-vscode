@@ -1,11 +1,11 @@
 # For available runners, see https://docs.github.com/en/enterprise-cloud@latest/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
 
-name: "Nightly Build"
+name: "Release Build"
 
 on:
-  schedule:
-    - cron: '12 1 * * *'
-  workflow_dispatch:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write
@@ -26,7 +26,7 @@ jobs:
           node-version: 20
           cache: npm
       - name: build
-        run: . "$env:GITHUB_WORKSPACE/.cicd/build_package.ps1"
+        run: . "$env:GITHUB_WORKSPACE/.cicd/build_package.ps1" $env:GITHUB_REF_NAME.TrimStart('v')
         shell: pwsh
       - uses: actions/upload-artifact@v4
         with:
@@ -34,13 +34,29 @@ jobs:
           path: gobo-eiffel-*.vsix
           retention-days: 1
 
+  create_release:
+    runs-on: ubuntu-latest
+    needs: build_package
+    steps:
+      - uses: actions/checkout@v4
+      - name: create_release
+        run: . "$env:GITHUB_WORKSPACE/.cicd/extract_release_notes.ps1" $env:GITHUB_REF_NAME.TrimStart('v') CHANGELOG.md release_notes.md
+        shell: pwsh
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Gobo Eiffel for VS Code ${{ github.ref_name }}
+          body_path: release_notes.md
+          prerelease: true
+          make_latest: false
+
 #
 # Publish package.
 #
 
   all_publish:
     runs-on: ubuntu-latest
-    needs: build_package
+    needs: create_release
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -51,5 +67,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: gobo-eiffel-*.vsix
-          tag: nightly
+          tag: ${{ github.ref_name }}
           rm: true
