@@ -70,4 +70,6 @@ $GOBO_PATTERN = "(\""name\"": \""gobo-eiffel\"",\r?\n\t*\""version\"": )\""[0-9]
 Write-Host "G14"
 
 (Get-Content -Raw "$FilePath") | Foreach-Object { $_ -replace "$GOBO_PATTERN", $GOBO_VERSION } | Set-Content -NoNewLine "$FilePath"
+Write-Host "Last code: $LastExitCode"
 Write-Host "G15"
+exit 0
