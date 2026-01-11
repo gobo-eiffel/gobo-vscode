@@ -44,27 +44,19 @@ Eiffel symbols, including:
 
 ### Object-test locals
 
-![Go To Object Test Local Definition](
-../images/go_to_object_test_local_definition.gif
-)
+![Go To Object Test Local Definition](../images/go_to_object_test_local_definition.gif)
 
 ### Iteration cursors
 
-![Go To Iteration Cursor Definition](
-../images/go_to_iteration_cursor_definition.gif
-)
+![Go To Iteration Cursor Definition](../images/go_to_iteration_cursor_definition.gif)
 
 ### Inline separate arguments
 
-![Go To Inline Separate Argument Definition](
-../images/go_to_inline_separate_argument_definition.gif
-)
+![Go To Inline Separate Argument Definition](../images/go_to_inline_separate_argument_definition.gif)
 
 ### Tuple labels
 
-![Go To Tuple Label Definition](
-../images/go_to_tuple_label_definition.gif
-)
+![Go To Tuple Label Definition](../images/go_to_tuple_label_definition.gif)
 
 ### `Result` in a function
 
@@ -80,9 +72,7 @@ Eiffel symbols, including:
 
 ### Formal generic parameters
 
-![Go To Formal Parameter Definition](
-../images/go_to_formal_parameter_definition.gif
-)
+![Go To Formal Parameter Definition](../images/go_to_formal_parameter_definition.gif)
 
 ## See also
 
