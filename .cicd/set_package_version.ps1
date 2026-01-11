@@ -35,7 +35,7 @@ param
 $ErrorActionPreference = "Stop"
 
 if ($Version) {
-	$GOBO_VERSION = $Version
+	$GOBO_VERSION = "$Version"
 } else {
 	$GOBO_DATE = git show -s --date=iso --format=%cd
 	if ($LastExitCode -ne 0) {
