@@ -1,3 +1,5 @@
+.cicd/**
+.github/**
 .vscode/**
 .vscode-test/**
 src/**
@@ -9,3 +11,16 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+*.vsix
+doc/**
+images/**
+!images/gobo.png
+!images/syntax_highlighting.png
+!images/code_completion.gif
+!images/feature_navigation.gif
+!images/feature_signature.gif
+!images/go_to_definition.gif
+!images/compile_and_run_in_terminal.gif
+!images/problems.png
+!images/new_gobo_eiffel_terminal.gif
+!images/compile_and_run_in_debugger.gif
