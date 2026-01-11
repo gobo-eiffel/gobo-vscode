@@ -9,6 +9,11 @@ here.
 
 ### Added
 
+* ✨ **Code completion for Eiffel**:
+  * Auto-completion of class names, feature and variable names while typing.
+  * Context-aware suggestions based on scope and static type
+    information.
+
 * 🧭 **Extended code navigation support** tailored to Eiffel:
   * **Go to Type Definition** to jump directly to the class defining a symbol’s type.
   * **Go to Implementations** to explore feature precursors and redeclarations across inheritance hierarchies.
