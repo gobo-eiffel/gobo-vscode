@@ -20,6 +20,14 @@ workflow.
 
   ![Syntax highlighting example](images/syntax_highlighting.png)
 
+* **Code completion**
+
+  Intelligent auto-completion for Eiffel code as you type, including
+  class names, feature names, and context-aware suggestions based on
+  the current scope and static type information.
+
+  ![Code Completion](images/code_completion.gif)
+
 * **Feature navigation**
 
   Quickly jump to a feature or feature clause within the current
