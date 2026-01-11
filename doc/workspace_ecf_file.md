@@ -12,8 +12,6 @@ In the Gobo Eiffel VS Code extension, a **workspace ECF file** can be
 specified using *workspace-specific settings*, together with an
 associated **ECF target** (the entry point defined in the ECF file).
 
----
-
 ## Workspace Settings
 
 | Setting | Description | Default |
@@ -48,9 +46,7 @@ You can also select an existing ECF file directly.
 In the contextual menu of the file, choose
 **Select Current File as Workspace ECF File**.
 
-![Select Current File As Workspace ECF File](
-../images/select_current_file_as_workspace_ecf.gif
-)
+![Select Current File As Workspace ECF File](../images/select_current_file_as_workspace_ecf.gif)
 
 The corresponding workspace-specific settings are filled in
 automatically.

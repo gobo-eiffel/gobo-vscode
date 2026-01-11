@@ -3,9 +3,7 @@
 Bring the power of the
 [*Gobo Eiffel*](https://www.gobosoft.com) toolchain directly into
 Visual Studio Code, providing full language support for the
-[Eiffel programming language](
-https://en.wikipedia.org/wiki/Eiffel_%28programming_language%29
-).
+[Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_%28programming_language%29).
 This extension lets you **edit, navigate, compile and run Eiffel
 programs** seamlessly — ideal for both **beginners discovering
 Eiffel** and **experienced developers** who want an efficient
@@ -52,9 +50,7 @@ workflow.
 * **Compile & run from VS Code**
 
   * Command to
-    [compile the current Eiffel file](
-    doc/compile_and_run_in_terminal.md
-    )
+    [compile the current Eiffel file](doc/compile_and_run_in_terminal.md)
     from the *Command Palette* or contextual menus.
   * Automatically run after compilation in the *Terminal* panel.
   * Set arguments and environment variables using *Launch
@@ -62,9 +58,7 @@ workflow.
   * Generate and use ECF files for more advanced compilation
     settings.
 
-  ![Compile & Run Eiffel File](
-  images/compile_and_run_in_terminal.gif
-  )
+  ![Compile & Run Eiffel File](images/compile_and_run_in_terminal.gif)
 
 * **Inline error reporting**
 
@@ -84,24 +78,18 @@ workflow.
 * **Debug configurations**
 
   Easily create
-  [launch configurations](
-  doc/compile_and_run_in_debug_console.md
-  )
+  [launch configurations](doc/compile_and_run_in_debug_console.md)
   for your Eiffel programs.
   Pass custom arguments and environment variables, and choose
   between compile & run, compile-only or run-only modes from the
   *Run And Debug* panel or by pressing `F5`.
 
-  ![Compile & run Eiffel in Debugger](
-  images/compile_and_run_in_debugger.gif
-  )
+  ![Compile & run Eiffel in Debugger](images/compile_and_run_in_debugger.gif)
 
 * **Automatic installation of Gobo Eiffel binaries**
 
   If needed, the extension can
-  [download and install](
-  doc/select_gobo_eiffel_installation.md
-  )
+  [download and install](doc/select_gobo_eiffel_installation.md)
   *Gobo Eiffel* and automatically check for updates.
 
 ## 🧭 Code Navigation
@@ -114,18 +102,15 @@ You can quickly explore classes, features, inheritance hierarchies,
 and type relationships across your entire workspace, including
 library code.
 
-* **[Go to Definition](doc/go_to_definition.md)**  
+* [Go to Definition](doc/go_to_definition.md)
   Navigate to the declaration of features, variables, classes,
   arguments, locals, and other Eiffel symbols.
-
-* **[Go to Type Definition](doc/go_to_type_definition.md)**  
+* [Go to Type Definition](doc/go_to_type_definition.md)
   Jump directly to the class that defines the type of a symbol.
-
-* **[Go to Implementations](doc/go_to_implementations.md)**  
+* [Go to Implementations](doc/go_to_implementations.md)
   Explore precursors and redeclarations of features across ancestor
   and descendant classes.
-
-* **[Class and Feature Search](doc/class_and_feature_search.md)**  
+* [Class and Feature Search](doc/class_and_feature_search.md)
   Quickly search for classes and features using the VS Code search
   bar and symbol navigation commands.
 
@@ -170,12 +155,8 @@ contextual menus:
 * [Lint Eiffel File](doc/compile_and_run_in_terminal.md#lint-eiffel-file)
 * [Create ECF File](doc/create_ecf_file.md)
 * [Select Workspace ECF File](doc/workspace_ecf_file.md#select-workspace-ecf-file)
-* [Select Current File as Workspace ECF File](
-  doc/workspace_ecf_file.md#select-current-file-as-workspace-ecf-file
-  )
-* [Show Workspace ECF File](
-  doc/workspace_ecf_file.md#show-workspace-ecf-file
-  )
+* [Select Current File as Workspace ECF File](doc/workspace_ecf_file.md#select-current-file-as-workspace-ecf-file)
+* [Show Workspace ECF File](doc/workspace_ecf_file.md#show-workspace-ecf-file)
 * [New Gobo Eiffel Terminal](doc/new_gobo_eiffel_terminal.md)
 
 ## 💡 Tips for Beginners
