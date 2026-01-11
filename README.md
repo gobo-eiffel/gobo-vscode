@@ -102,7 +102,7 @@ You can quickly explore classes, features, inheritance hierarchies,
 and type relationships across your entire workspace, including
 library code.
 
-* [Go to Definition](https://gobo-eiffel.github.io/gobo-vscode//go_to_definition.html)
+* [Go to Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_definition.html)
   Navigate to the declaration of features, variables, classes,
   arguments, locals, and other Eiffel symbols.
 * [Go to Type Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_type_definition.html)
