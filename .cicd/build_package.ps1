@@ -28,7 +28,7 @@ $ErrorActionPreference = "Stop"
 
 & "$PSScriptRoot/set_package_version.ps1" package.json "$Version"
 if ($LastExitCode -ne 0) {
-	Write-Error "Command 'set_package_version.ps1 package.json $Version' exited with code $LastExitCode #"
+	Write-Error "Command 'set_package_version.ps1 package.json $Version' exited with code $LastExitCode"
 	exit $LastExitCode
 }
 & "$PSScriptRoot/set_package_version.ps1" package-lock.json "$Version"
