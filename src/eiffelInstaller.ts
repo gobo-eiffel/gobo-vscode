@@ -93,7 +93,7 @@ export async function selectOrDownloadAndInstall(context: vscode.ExtensionContex
 		return await downloadAndInstall(latestRelease.fileUrl, latestRelease.fileName, latestRelease.version, context);
 	}
 
-	return; // Cancel
+	return goboPath; // Cancel
 }
 
 /**
@@ -203,7 +203,7 @@ async function checkForUpdates(goboPath: string, context: vscode.ExtensionContex
 		if (choice === 'Skip') {
 			return goboPath;
 		}
-		return; // Cancel
+		return goboPath; // Cancel
 	}
 
 	return goboPath;
