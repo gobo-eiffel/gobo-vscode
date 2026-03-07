@@ -5,6 +5,31 @@ here.
 
 ---
 
+## [1.3.0] – 7 March 2026
+
+### Added
+
+* ✨ **Improved code completion for Eiffel**:
+  * Completion snippets for common Eiffel structures such as
+    `if ... then ... end` and `from ... until ... loop ... end`.
+
+* 🧭 **Extended code navigation support** tailored to Eiffel:
+  * **Feature Callers/Callees** to explore features that call or are
+    called by a given feature.
+  * **Client/Supplier Classes** to explore the client and supplier
+    relationships of a given class.
+  * **Ancestor/Descendant Classes** to navigate the inheritance
+    hierarchy of a class.
+
+### Improved
+
+* ⚙️ **More fault-tolerant analysis and error reporting**:
+  * Code navigation and completion remain available even when the
+    current file contains syntax or compilation errors.
+  * Improved syntax error diagnostics and messages.
+
+---
+
 ## [1.2.0] – 11 January 2026
 
 ### Added

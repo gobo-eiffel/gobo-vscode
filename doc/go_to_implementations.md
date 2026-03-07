@@ -8,7 +8,8 @@ of a given feature.
 
 Place the cursor on a feature name, then:
 
-- Right-click and select **Go to Implementations**
+- Right-click and select **Go to Implementations**, or
+- Press **`Ctrl+F12`**
 
 The matching features are displayed in an inline popup, allowing you
 to inspect their declarations without leaving the current context.
