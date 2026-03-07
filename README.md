@@ -6,8 +6,54 @@ Visual Studio Code, providing full language support for the
 [Eiffel programming language](https://en.wikipedia.org/wiki/Eiffel_%28programming_language%29).
 This extension lets you **edit, navigate, compile and run Eiffel
 programs** seamlessly — ideal for both **beginners discovering
-Eiffel** and **experienced developers** who want an efficient
-workflow.
+Eiffel** and **experienced developers** who want an efficient workflow.
+
+## 🚀 Quick Start
+
+Start coding in Eiffel **instantly** — no setup, no configuration, just run
+your first program in seconds!  
+Gobo Eiffel supports both **Beginner mode** for a single file and
+**Advanced mode** for full workspace projects with ECF files.
+
+### 1️⃣ Beginner: Hello World
+
+If you are new to Eiffel, follow our
+[Eiffel For Beginners](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html) guide.  
+It shows how to create a simple `hello_world.e` file, compile it, and run it in VS Code.
+
+> **Note:** No ECF file is needed for this simple workflow.
+
+### 2️⃣ Advanced: Workspace with ECF File
+
+For full projects with multiple classes, libraries, or targets:
+
+1. Open your Eiffel project folder in VS Code.
+
+2. Specify your **workspace ECF file** and target:
+   * Right-click the ECF file → **Eiffel Configuration** → **Select Current File As Workspace ECF File**
+   * Or right-click another file → **Eiffel Configuration** → **Select Workspace ECF File**
+
+3. You now have full access to:
+   * **Code navigation** (definitions, implementations, types)
+   * **Feature callers/callees exploration**
+   * **Client/supplier relationships**
+   * **Inheritance hierarchy exploration**
+   * **Code completion**
+   * **Inline error reporting as you type**
+   * **Compilation and execution**
+
+## 🧩 At a Glance
+
+| Capability | Description |
+|------------|-------------|
+| Syntax highlighting | Full Eiffel syntax grammar with modern highlighting |
+| Code completion | Context-aware completion for classes and features |
+| Navigation | Jump to definitions, implementations and types |
+| Hierarchy exploration | Call hierarchy, client/supplier relationships and inheritance trees |
+| Compilation | Compile and run Eiffel programs directly from VS Code |
+| Error reporting | Inline errors and integration with the Problems panel |
+| Execution | Launch configurations |
+| Integrated terminal | Preconfigured Gobo Eiffel command-line environment |
 
 ## ✨ Features
 
@@ -102,17 +148,36 @@ You can quickly explore classes, features, inheritance hierarchies,
 and type relationships across your entire workspace, including
 library code.
 
-* [Go to Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_definition.html)
+### Symbol Navigation
+
+* [Go to Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_definition.html):
   Navigate to the declaration of features, variables, classes,
   arguments, locals, and other Eiffel symbols.
-* [Go to Type Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_type_definition.html)
+
+* [Go to Type Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_type_definition.html):
   Jump directly to the class that defines the type of a symbol.
-* [Go to Implementations](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_implementations.html)
+
+* [Go to Implementations](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_implementations.html):
   Explore precursors and redeclarations of features across ancestor
   and descendant classes.
-* [Class and Feature Search](https://gobo-eiffel.github.io/gobo-vscode/doc/class_and_feature_search.html)
+
+* [Class and Feature Search](https://gobo-eiffel.github.io/gobo-vscode/doc/class_and_feature_search.html):
   Quickly search for classes and features using the VS Code search
   bar and symbol navigation commands.
+
+### Hierarchy Exploration
+
+Understand relationships between features and classes through
+call hierarchies, dependency relationships, and inheritance trees.
+
+* [Feature Callers/Callees](https://gobo-eiffel.github.io/gobo-vscode/doc/feature_callers_callees.html):
+  Explore features that call or are called by a given feature.
+
+* [Client/Supplier Classes](https://gobo-eiffel.github.io/gobo-vscode/doc/client_supplier_classes.html):
+  Explore the client and supplier relationships of a given class.
+
+* [Ancestor/Descendant Classes](https://gobo-eiffel.github.io/gobo-vscode/doc/ancestor_descendant_classes.html):
+  Navigate the inheritance hierarchy of a class.
 
 ## ⚙️ User Settings
 
@@ -159,21 +224,6 @@ contextual menus:
 * [Show Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#show-workspace-ecf-file)
 * [New Gobo Eiffel Terminal](https://gobo-eiffel.github.io/gobo-vscode/doc/new_gobo_eiffel_terminal.html)
 
-## 💡 Tips for Beginners
-
-* Start by opening a
-  [single `.e` file](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
-  and run **Compile & Run Eiffel File** — no project setup needed.
-* Errors appear directly in the editor with explanations in the
-  *Problems* panel.
-
-## 💪 Tips for Advanced Users
-
-* Use multiple launch configurations to run different test
-  scenarios.
-* The integrated terminal automatically defines `$GOBO` and other
-  environment variables.
-
 ## 📚 More Information
 
 * [Gobo Eiffel Documentation](https://www.gobosoft.com)
@@ -182,4 +232,4 @@ contextual menus:
 
 ---
 
-Enjoy productive Eiffel development right inside VS Code!
+Happy Eiffel coding in VS Code! 🚀
