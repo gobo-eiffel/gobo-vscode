@@ -82,6 +82,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: publish_package
     steps:
+      - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
           name: gobo_eiffel_package
@@ -91,6 +92,7 @@ jobs:
           node-version: 20
           cache: npm
       - name: publish
-        run: npx vsce publish --packagePath gobo-eiffel-*.vsix
+        run: npx vsce publish --packagePath gobo-eiffel-$GOBO_VSCODE_VERSION.vsix
         env:
+          GOBO_VSCODE_VERSION: $env:GITHUB_REF_NAME.TrimStart('v')
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
