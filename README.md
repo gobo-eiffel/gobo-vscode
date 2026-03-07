@@ -153,14 +153,11 @@ library code.
 * [Go to Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_definition.html):
   Navigate to the declaration of features, variables, classes,
   arguments, locals, and other Eiffel symbols.
-
 * [Go to Type Definition](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_type_definition.html):
   Jump directly to the class that defines the type of a symbol.
-
 * [Go to Implementations](https://gobo-eiffel.github.io/gobo-vscode/doc/go_to_implementations.html):
   Explore precursors and redeclarations of features across ancestor
   and descendant classes.
-
 * [Class and Feature Search](https://gobo-eiffel.github.io/gobo-vscode/doc/class_and_feature_search.html):
   Quickly search for classes and features using the VS Code search
   bar and symbol navigation commands.
@@ -172,10 +169,8 @@ call hierarchies, dependency relationships, and inheritance trees.
 
 * [Feature Callers/Callees](https://gobo-eiffel.github.io/gobo-vscode/doc/feature_callers_callees.html):
   Explore features that call or are called by a given feature.
-
 * [Client/Supplier Classes](https://gobo-eiffel.github.io/gobo-vscode/doc/client_supplier_classes.html):
   Explore the client and supplier relationships of a given class.
-
 * [Ancestor/Descendant Classes](https://gobo-eiffel.github.io/gobo-vscode/doc/ancestor_descendant_classes.html):
   Navigate the inheritance hierarchy of a class.
 
@@ -209,11 +204,11 @@ contextual menus:
 * [Compile & Run With Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile--run-with-workspace-ecf-file)
 * [Compile With Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile-with-workspace-ecf-file)
 * [Run With Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-with-workspace-ecf-file)
-* [Lint With Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-with-workspace-ecf-file)
+* [Lint With Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#lint-with-workspace-ecf-file)
 * [Compile & Run With Current ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile--run-with-current-ecf-file)
 * [Compile With Current ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile-with-current-ecf-file)
 * [Run With Current ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-with-current-ecf-file)
-* [Lint With Current ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-with-current-ecf-file)
+* [Lint With Current ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#lint-with-current-ecf-file)
 * [Compile & Run Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile--run-eiffel-file)
 * [Compile Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile-eiffel-file)
 * [Run Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-eiffel-file)
