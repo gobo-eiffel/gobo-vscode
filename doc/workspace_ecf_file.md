@@ -2,7 +2,7 @@
 
 To provide accurate feedback while editing Eiffel code, the Eiffel
 analyzer must inspect not only the current class, but also all related
-classes in the workspace and in external Eiffel libraries.
+classes in the workspace and in third-party Eiffel libraries.
 
 This is made possible by an **ECF file** (*Eiffel Configuration File*).
 An ECF file describes where classes are located and specifies options

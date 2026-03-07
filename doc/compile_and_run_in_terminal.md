@@ -6,11 +6,11 @@ in the *Command Palette* and contextual menus. The commands are:
 * [Compile & Run With Workspace ECF File](#compile--run-with-workspace-ecf-file)
 * [Compile With Workspace ECF File](#compile-with-workspace-ecf-file)
 * [Run With ECF Workspace File](#run-with-workspace-ecf-file)
-* [Lint With ECF Workspace File](#run-with-workspace-ecf-file)
+* [Lint With ECF Workspace File](#lint-with-workspace-ecf-file)
 * [Compile & Run With Current ECF File](#compile--run-with-current-ecf-file)
 * [Compile With Current ECF File](#compile-with-current-ecf-file)
 * [Run With ECF Current File](#run-with-current-ecf-file)
-* [Lint With ECF Current File](#run-with-current-ecf-file)
+* [Lint With ECF Current File](#lint-with-current-ecf-file)
 * [Compile & Run Eiffel File](#compile--run-eiffel-file)
 * [Compile Eiffel File](#compile-eiffel-file)
 * [Run Eiffel File](#run-eiffel-file)
@@ -40,7 +40,7 @@ and runs it in the *Terminal* panel.
 This command is configurable using the values (compilation options, arguments,
 etc.) specified in the configuration
 [*Compile & Run With Workspace ECF File*](compile_and_run_in_debug_console.md#compile--run-with-workspace-ecf-file)
-f found in the `launch.json` file.
+if found in the `launch.json` file.
 
 ## Compile With Workspace ECF File
 
@@ -85,7 +85,7 @@ Learn more about ECF files in the
 This command is configurable using the values (compilation options, arguments,
 etc.) specified in the configuration
 [*Compile & Run With Current ECF File*](compile_and_run_in_debug_console.md#compile--run-with-current-ecf-file)
-f found in the `launch.json` file.
+if found in the `launch.json` file.
 
 ## Compile With Current ECF File
 
