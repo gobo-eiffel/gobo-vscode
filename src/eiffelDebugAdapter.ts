@@ -3,7 +3,7 @@ import * as cp from 'child_process';
 import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
-import { compileEiffelSystem, getExecutableName } from './eiffelCompiler';
+import { compileEiffelSystem, getExecutableName, getEnvironmentVariables } from './eiffelCompiler';
 import { expandEnvVars } from './eiffelUtilities';
 
 export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
@@ -29,13 +29,13 @@ export function activateEiffelDebugAdapter(context: vscode.ExtensionContext) {
 				}
 				config.ecfFile = editor.document.fileName;
 			} else {
-				config.ecfFile = await expandEnvVars(config.ecfFile, process.env, context);
+				config.ecfFile = await expandEnvVars(config.ecfFile, await getEnvironmentVariables(context), context);
 			}
 			if (config.buildDir) {
-				config.buildDir = await expandEnvVars(config.buildDir, process.env, context);
+				config.buildDir = await expandEnvVars(config.buildDir, await getEnvironmentVariables(context), context);
 			}
 			if (config.workingDir) {
-				config.workingDir = await expandEnvVars(config.workingDir, process.env, context);
+				config.workingDir = await expandEnvVars(config.workingDir, await getEnvironmentVariables(context), context);
 			}
 			return config;
 		}
