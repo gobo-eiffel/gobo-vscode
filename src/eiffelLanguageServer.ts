@@ -4,6 +4,7 @@ import * as os from 'os';
 import * as fs from 'fs';
 import { LanguageClient, LanguageClientOptions, ServerOptions, TransportKind, NotificationType } from 'vscode-languageclient/node';
 import { getOrInstallOrUpdateGoboEiffel, selectOrDownloadAndInstall, getLocalGoboVersion, GoboVersion } from './eiffelInstaller';
+import { getEnvironmentVariables } from './eiffelCompiler';
 
 let client: LanguageClient | undefined;
 const statusItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
@@ -20,6 +21,13 @@ export function activateEiffelLanguageServer(context: vscode.ExtensionContext) {
 
 	// Start with initial config
 	startLanguageServer(context);
+
+	// Restart if environment variables are changed.
+	vscode.workspace.onDidChangeConfiguration(e => {
+		if (e.affectsConfiguration("gobo-eiffel.workspaceEnvironmentVariables")) {
+			restartLanguageServer(context);
+		}
+	});
 
 	// Command: restart with new config
 	context.subscriptions.push(vscode.commands.registerCommand("gobo-eiffel.restartLanguageServer", async () => {
@@ -102,8 +110,8 @@ export async function startLanguageServer(context: vscode.ExtensionContext, rest
 	}
 
 	const serverOptions: ServerOptions = {
-		run: { command: gelsp, args: [], transport: TransportKind.stdio },
-		debug: { command: gelsp, args: ["--debug"], transport: TransportKind.stdio }
+		run: { command: gelsp, args: [], transport: TransportKind.stdio, options: { env: await getEnvironmentVariables(context) } },
+		debug: { command: gelsp, args: ["--debug"], transport: TransportKind.stdio, options: { env: await getEnvironmentVariables(context) } }
 	};
 
 	const clientOptions: LanguageClientOptions = {

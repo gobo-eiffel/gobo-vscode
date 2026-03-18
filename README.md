@@ -45,7 +45,7 @@ For full projects with multiple classes, libraries, or targets:
 ## 🧩 At a Glance
 
 | Capability | Description |
-|------------|-------------|
+| ---------- | ----------- |
 | Syntax highlighting | Full Eiffel syntax grammar with modern highlighting |
 | Code completion | Context-aware completion for classes and features |
 | Navigation | Jump to definitions, implementations and types |
@@ -217,6 +217,7 @@ contextual menus:
 * [Select Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#select-workspace-ecf-file)
 * [Select Current File as Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#select-current-file-as-workspace-ecf-file)
 * [Show Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#show-workspace-ecf-file)
+* [Set Environment Variables](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#set-environment-variables)
 * [New Gobo Eiffel Terminal](https://gobo-eiffel.github.io/gobo-vscode/doc/new_gobo_eiffel_terminal.html)
 
 ## 📚 More Information

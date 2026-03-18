@@ -9,20 +9,153 @@ import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
  * @param str String to be processed
  * @param env Environment variables
  * @param context VSCode extension context
+ * @param uri File where the variables will be used (needed in case of multi-root workspaces)
  * @returns the new string
  */
-export async function expandEnvVars(str: string, env: NodeJS.ProcessEnv, context: vscode.ExtensionContext): Promise<string> {
-	const match = str.match(/\$\{GOBO\}|\$GOBO/);
-	if (match && !env.GOBO) {
+export async function expandEnvVars(
+	str: string,
+	env: NodeJS.ProcessEnv,
+	context: vscode.ExtensionContext,
+	uri?: vscode.Uri
+): Promise<string> {
+	const envIndex = buildEnvIndex(env);
+
+	let match = str.match(/\$\{GOBO\}|\$GOBO/);
+	if (match && envIndex.get('GOBO') === undefined) {
 		const goboPath = await getOrInstallOrUpdateGoboEiffel(context);
 		if (goboPath) {
-			env = { ...env, GOBO: goboPath};
+			envIndex.set('GOBO', goboPath);
 		}
 	}
+
+	// ${workspaceFolder}
+	let workspaceFolderKey = "workspaceFolder";
+	if (process.platform === "win32") {
+		workspaceFolderKey = workspaceFolderKey.toUpperCase();
+	}
+	if (envIndex.get(workspaceFolderKey) === undefined) {
+		const folder = uri
+			? vscode.workspace.getWorkspaceFolder(uri)
+			: vscode.workspace.workspaceFolders?.[0];
+		envIndex.set(workspaceFolderKey, folder?.uri.fsPath ?? "");
+	}
+
 	return str.replace(/\$\{([^}]+)\}|\$([A-Za-z0-9_]+)/g, (_, var1, var2) => {
-		const name = var1 || var2;
-		return env[name] ?? ''; // empty string if undefined
+		let name = var1 || var2;
+		if (process.platform === "win32") {
+			name = name.toUpperCase();
+		}
+		return envIndex.get(name) ?? ''; // empty string if undefined
 	});
+}
+
+/**
+ * Resolve environment variables in `env` with values set
+ * in `processEnv` or in `env` itself.
+ * @param env Variables to be resolved
+ * @param processEnv Variables already defined
+ * @param context VSCode extension context
+ * @param uri File where the variables will be used (needed in case of multi-root workspaces)
+ * @returns Resolved variables
+ */
+export async function resolveEnvironmentVariables(
+	env: Record<string, string>,
+	processEnv: NodeJS.ProcessEnv,
+	context: vscode.ExtensionContext,
+	uri?: vscode.Uri
+): Promise<NodeJS.ProcessEnv> {
+
+	const resolved: Record<string, string> = {};
+	const resolving = new Set<string>();
+	const envIndex = buildEnvIndex(env);
+	const processEnvIndex = buildEnvIndex(processEnv);
+
+	if (processEnvIndex.get('GOBO') === undefined && envIndex.get('GOBO') === undefined) {
+		const goboPath = await getOrInstallOrUpdateGoboEiffel(context);
+		if (goboPath) {
+			processEnvIndex.set('GOBO', goboPath);
+		}
+	}
+
+	// ${workspaceFolder}
+	let workspaceFolderKey = "workspaceFolder";
+	if (process.platform === "win32") {
+		workspaceFolderKey = workspaceFolderKey.toUpperCase();
+	}
+	if (processEnvIndex.get(workspaceFolderKey) === undefined && envIndex.get(workspaceFolderKey) === undefined) {
+		const folder = uri
+			? vscode.workspace.getWorkspaceFolder(uri)
+			: vscode.workspace.workspaceFolders?.[0];
+		processEnvIndex.set(workspaceFolderKey, folder?.uri.fsPath ?? "");
+	}
+
+	function resolveVar(name: string): string {
+
+		if (process.platform === "win32") {
+			name = name.toUpperCase();
+		}
+
+		// already resolved
+		if (resolved[name] !== undefined) {
+			return resolved[name];
+		}
+
+		// cycle detection
+		if (resolving.has(name)) {
+			// Circular environment variable reference.
+			return "";
+		}
+
+		resolving.add(name);
+
+		let value = envIndex.get(name) ?? "";
+
+		value = value.replace(/\$\{([^}]+)\}|\$([A-Za-z0-9_]+)/g, (_, var1, var2) => {
+			let expr = var1 || var2;
+			if (process.platform === "win32") {
+				expr = expr.toUpperCase();
+			}
+
+			// reference to another env variable
+			if (envIndex.get(expr) !== undefined) {
+				return resolveVar(expr);
+			}
+
+			return processEnvIndex.get(expr) ?? "";
+		});
+
+		resolving.delete(name);
+		resolved[name] = value;
+
+		return value;
+	}
+
+	for (const name of Object.keys(env)) {
+		resolveVar(name);
+	}
+
+	return resolved;
+}
+
+
+function buildEnvIndex(env: NodeJS.ProcessEnv): Map<string, string> {
+	const map = new Map<string, string>();
+
+	if (process.platform === "win32") {
+		for (const [key, value] of Object.entries(env)) {
+			if (value !== undefined) {
+				map.set(key.toUpperCase(), value);
+			}
+		}
+	} else {
+		for (const [key, value] of Object.entries(env)) {
+			if (value !== undefined) {
+				map.set(key, value);
+			}
+		}
+	}
+
+	return map;
 }
 
 /**

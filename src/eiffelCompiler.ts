@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
-import { getNthLineSync } from './eiffelUtilities';
+import { resolveEnvironmentVariables, getNthLineSync } from './eiffelUtilities';
 import { createNewGoboEiffelTerminal, executeInTerminal } from './eiffelTerminal';
 
 const outputChannel = vscode.window.createOutputChannel("Gobo Eiffel compilation");
@@ -32,7 +32,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -45,8 +45,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -71,7 +71,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -81,8 +81,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			compilationOptions = config.compilationOptions ?? [];
 			const configBuildDir = config.buildDir;
 			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -108,7 +108,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -120,8 +120,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -145,7 +145,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		}
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let lintOptions = [];
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -153,8 +153,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		const config = eiffelConfigs.find(c => c.name === configName);
 		if (config) {
 			lintOptions = config.compilationOptions ?? [];
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -182,7 +182,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -196,8 +196,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -223,7 +223,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let ecfTarget = undefined;
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -234,8 +234,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			compilationOptions = config.compilationOptions ?? [];
 			const configBuildDir = config.buildDir;
 			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -262,7 +262,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -275,8 +275,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -300,7 +300,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		}
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let lintOptions = [];
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -308,8 +308,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		const config = eiffelConfigs.find(c => c.name === configName);
 		if (config) {
 			lintOptions = config.compilationOptions ?? [];
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -330,7 +330,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -343,8 +343,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -363,7 +363,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let ecfTarget = vscode.workspace.getConfiguration('gobo-eiffel').get<string>('workspaceEcfTarget');
 		let compilationOptions = [];
 		let buildDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -374,8 +374,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			compilationOptions = config.compilationOptions ?? [];
 			const configBuildDir = config.buildDir;
 			buildDir = ((configBuildDir) ? configBuildDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -395,7 +395,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		let buildDir = defaultCwd;
 		let args = [];
 		let workingDir = defaultCwd;
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -408,8 +408,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			args = config.args ?? [];
 			const configWorkingDir = config.workingDir;
 			workingDir = ((configWorkingDir) ? configWorkingDir : defaultCwd);
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -426,7 +426,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		}
 		const defaultCwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 		let lintOptions = [];
-		let environmentVariables = process.env;
+		let environmentVariables = await getEnvironmentVariables(context);
 
 		const debugConfigs = vscode.workspace.getConfiguration('launch').configurations as any[];
 		const eiffelConfigs = debugConfigs.filter(c => c.type === 'eiffel');
@@ -434,8 +434,8 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		const config = eiffelConfigs.find(c => c.name === configName);
 		if (config) {
 			lintOptions = config.compilationOptions ?? [];
-			const userEnv = config.environmentVariables ?? {};
-			environmentVariables = {...process.env, ...userEnv};
+			const userEnv = await resolveEnvironmentVariables(config.environmentVariables ?? {}, environmentVariables, context);
+			environmentVariables = {...environmentVariables, ...userEnv};
 		} else {
 			vscode.window.showInformationMessage(`Configure this command using the Launch config "${configName}"`);
 		}
@@ -475,14 +475,14 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			filePath = editor.document.uri.fsPath;
 		}
 		const cwd = ((fs.existsSync(filePath)) ? (fs.statSync(filePath).isDirectory() ? filePath : path.dirname(filePath)) : '.');
-		await createNewGoboEiffelTerminal(cwd, process.env, context);
+		await createNewGoboEiffelTerminal(cwd, await getEnvironmentVariables(context), context);
 	});
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
 
 	const selectWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
 		vscode.commands.executeCommand(
 			'workbench.action.openWorkspaceSettings',
-			'ext:gobo-eiffel.workspaceEcf'
+			'ext:gobo-eiffel workspaceEcf workspaceEnvironment'
 		);
 	});
 	context.subscriptions.push(selectWorkspaceEcfFileCmd);
@@ -533,7 +533,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfTarget', selectedTarget, vscode.ConfigurationTarget.Workspace);
 			vscode.commands.executeCommand(
 				'workbench.action.openWorkspaceSettings',
-				'ext:gobo-eiffel.workspaceEcf'
+				'ext:gobo-eiffel workspaceEcf workspaceEnvironment'
 			);
 		}
 	});
@@ -554,6 +554,15 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 		}
 	});
 	context.subscriptions.push(showWorkspaceEcfFileCmd);
+
+	const setWorkspaceEnvironmentVariablesCmd = vscode.commands.registerCommand('gobo-eiffel.setWorkspaceEnvironmentVariables', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
+		vscode.commands.executeCommand(
+			'workbench.action.openWorkspaceSettings',
+			'gobo-eiffel.workspaceEnvironmentVariables'
+		);
+	});
+	context.subscriptions.push(setWorkspaceEnvironmentVariablesCmd);
+
 	context.subscriptions.push(vscode.workspace.onDidChangeConfiguration(updateHasWorkspaceEcfFileContext));
 	updateHasWorkspaceEcfFileContext();
 }
@@ -780,7 +789,7 @@ export async function createEcfFile(
 		return;
 	}
 	const gedocPath = path.join(goboEiffelPath, 'bin', 'gedoc' + (os.platform() === 'win32' ? '.exe' : ''));
-	await executeInTerminal(gedocPath, ['--format=ecf_pretty_print', '--interactive', filePath], path.dirname(filePath), process.env, context);
+	await executeInTerminal(gedocPath, ['--format=ecf_pretty_print', '--interactive', filePath], path.dirname(filePath), await getEnvironmentVariables(context), context);
 	return;
 }
 
@@ -857,6 +866,30 @@ function getWorkspaceEcfFile(): string | undefined {
  */
 function updateHasWorkspaceEcfFileContext() {
 	vscode.commands.executeCommand('setContext', 'gobo-eiffel.hasWorkspaceEcfFile', !!getWorkspaceEcfFile());
+}
+
+/**
+ * Environment variables used to run Eiffel tools.
+ * @param context VSCode extension context
+ * @returns Environment variables
+ */
+export async function getEnvironmentVariables(context: vscode.ExtensionContext): Promise<NodeJS.ProcessEnv> {
+	const config = vscode.workspace.getConfiguration("gobo-eiffel");
+	const userEnv = config.get<Record<string, string>>("workspaceEnvironmentVariables") ?? {};
+	const resolvedEnv = await resolveEnvironmentVariables(userEnv, process.env, context);
+
+	// ${workspaceFolder}
+	let workspaceFolderEnv = {};
+	if (process.env.workspaceFolder === undefined) {
+		const folder = vscode.workspace.workspaceFolders?.[0];
+		workspaceFolderEnv = {"workspaceFolder": folder?.uri.fsPath ?? ""};
+	}
+
+	return {
+		...process.env,
+		...workspaceFolderEnv,
+		...resolvedEnv
+	};
 }
 
 /**

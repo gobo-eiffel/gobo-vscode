@@ -18,6 +18,7 @@ associated **ECF target** (the entry point defined in the ECF file).
 | ------- | ----------- | ------- |
 | **`gobo-eiffel.workspaceEcfFile`** | ECF file to analyze Eiffel classes in current workspace. | `null` |
 | **`gobo-eiffel.workspaceEcfTarget`** | Target in ECF file to analyze Eiffel classes in current workspace. | `null` |
+| **`gobo-eiffel.workspaceEnvironmentVariables`** | Environment variables used in ECF file. | `{}` |
 
 If no ECF file is specified, the extension looks for ECF files at the
 root of the workspace and automatically selects the last one
@@ -28,6 +29,9 @@ workspace root.
 
 If the ECF target is not specified, the last target defined in the
 selected ECF file is used.
+
+If the ECF file relies on environment variables, their values can
+be specified here.
 
 ## Select Workspace ECF File
 
@@ -66,6 +70,13 @@ using the **Create ECF File** command.
 See
 [Create ECF File](create_ecf_file.md)
 for more details.
+
+## Set Environment Variables
+
+To set environment variables used in the ECF file, choose
+**Set Environment Variables** from a contextual menu.
+
+![Set Environment Variables](../images/set_environment_variables.gif)
 
 ## See also
 
