@@ -159,14 +159,17 @@ export async function restartLanguageServer(context: vscode.ExtensionContext) {
 }
 
 export async function stopLanguageServer() {
-	if (client) {
-		const oldClient = client;
-		client = undefined;
-		// The `stop` call will send the "shutdown" notification to the LSP.
-		await oldClient.stop();
-		// The `dipose` call will send the "exit" request to the LSP which actually tells the child process to exit.
-		await oldClient.dispose();
+	try {
+		if (client) {
+			const oldClient = client;
+			client = undefined;
+			// The `stop` call will send the "shutdown" notification to the LSP.
+			await oldClient.stop();
+			// The `dispose` call will send the "exit" request to the LSP which actually tells the child process to exit.
+			await oldClient.dispose();
 
+		}
+	} catch {
 	}
 	statusItem.text = `$(circle-slash) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 	statusItem.tooltip = `Eiffel Language Server stopped\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to restart or select another version...`;
