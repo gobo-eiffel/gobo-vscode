@@ -480,10 +480,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	context.subscriptions.push(newGoboEiffelTerminalCmd);
 
 	const selectWorkspaceEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.selectWorkspaceEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
-		vscode.commands.executeCommand(
-			'workbench.action.openWorkspaceSettings',
-			'ext:gobo-eiffel workspaceEcf workspaceEnvironment'
-		);
+		selectEcfFileAndSetWorkspaceEcfSettings(context);
 	});
 	context.subscriptions.push(selectWorkspaceEcfFileCmd);
 
@@ -501,41 +498,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			fileUri = editor.document.uri;
 		}
 		let filePath = fileUri.fsPath;
-
-		const ecfTargets = await getAllEcfTargets(filePath, context);
-		if (!ecfTargets) {
-			return;
-		}
-
-		let selectedTarget = undefined;
-		switch (ecfTargets.length) {
-			case 0:
-				selectedTarget = "";
-				break;
-			case 1:
-				selectedTarget = ecfTargets[0];
-				break;
-			default:
-				selectedTarget = await vscode.window.showQuickPick(
-					ecfTargets,
-					{
-						title: 'Select ECF target',
-						placeHolder:  'Select ECF target',
-						canPickMany: false
-					}
-				);
-		}
-		if (selectedTarget) {
-			if (vscode.workspace.getWorkspaceFolder(fileUri)) {
-				filePath = vscode.workspace.asRelativePath(fileUri, false).replace(/\\/g, '/');
-			}
-			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfFile', filePath, vscode.ConfigurationTarget.Workspace);
-			await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfTarget', selectedTarget, vscode.ConfigurationTarget.Workspace);
-			vscode.commands.executeCommand(
-				'workbench.action.openWorkspaceSettings',
-				'ext:gobo-eiffel workspaceEcf workspaceEnvironment'
-			);
-		}
+		selectEcfTargetAndSetWorkspaceEcfSettings(filePath, fileUri, context);
 	});
 	context.subscriptions.push(selectAsWorkspaceEcfFileCmd);
 
@@ -858,6 +821,140 @@ function getWorkspaceEcfFile(): string | undefined {
 		return undefined;
 	}
 	return path.join(workspaceFolder.uri.fsPath, filePath);
+}
+
+/**
+ * Show the workspace ECF settings window.
+ */
+async function showWorkspaceEcfSettings() {
+	await vscode.commands.executeCommand(
+		'workbench.action.openWorkspaceSettings',
+		'ext:gobo-eiffel workspaceEcf workspaceEnvironment'
+	);
+}
+
+/**
+ * Set the workspace ECF settings.
+ * @param ecfFilePath ECF file pathname
+ * @param ecfTarget Target in ECF file
+ */
+async function setWorkspaceEcfSettings(
+	ecfFilePath: string,
+	selectedTarget: string
+) {
+	await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfFile', ecfFilePath, vscode.ConfigurationTarget.Workspace);
+	await vscode.workspace.getConfiguration('gobo-eiffel').update('workspaceEcfTarget', selectedTarget, vscode.ConfigurationTarget.Workspace);
+}
+
+/**
+ * Select target in an ECF file.
+ * @param ecfFilePath ECF file pathname
+ * @param context VSCode extension context
+ * @returns name of selected target or undefined on error
+ */
+async function selectEcfTarget(
+	ecfFilePath: string,
+	context: vscode.ExtensionContext
+): Promise<string | undefined> {
+
+	const ecfTargets = await getAllEcfTargets(ecfFilePath, context);
+	if (!ecfTargets) {
+		return;
+	}
+
+	switch (ecfTargets.length) {
+		case 0:
+			return;
+		case 1:
+			return ecfTargets[0];
+			break;
+		default:
+			return await vscode.window.showQuickPick(
+				ecfTargets,
+				{
+					title: 'Select ECF target',
+					placeHolder: 'Select ECF target',
+					canPickMany: false
+				}
+			);
+	}
+};
+
+/**
+ * Select workspace ECF file, and set workspace settings.
+ * @param context VSCode extension context
+ */
+async function selectEcfFileAndSetWorkspaceEcfSettings(
+	context: vscode.ExtensionContext
+) {
+	const choice = await vscode.window.showInformationMessage(
+		`Select Workspace ECF File`,
+		{ modal: true },
+		'Browse...',
+		'Enter Filename...',
+		'Use Default'
+	);
+	if (choice === 'Browse...') {
+		let dialogOptions: vscode.OpenDialogOptions = {
+			canSelectFiles: true,
+			canSelectFolders: false,
+			openLabel: 'Select Workspace ECF File',
+			filters: { 'ECF Files': ['ecf'] }
+		};
+		const folder = vscode.workspace.workspaceFolders?.[0]?.uri;
+		if (folder  && fs.existsSync(folder.fsPath)) {
+			dialogOptions = { ...dialogOptions, defaultUri:folder };
+		}
+		const uris = await vscode.window.showOpenDialog(dialogOptions);
+		if (uris && uris.length > 0) {
+			const ecfFileUri = uris[0];
+			const ecfFilePath = ecfFileUri.fsPath;
+			await selectEcfTargetAndSetWorkspaceEcfSettings(ecfFilePath, ecfFileUri, context);
+		}
+		return;
+	}
+	if (choice === 'Enter Filename...') {
+		await showWorkspaceEcfSettings();
+		return;
+	}
+}
+
+/**
+ * Select target in an ECF file, and set workspace settings.
+ * @param ecfFilePath ECF file pathname
+ * @param ecfFileUri ECF file URI
+ * @param context VSCode extension context
+ */
+async function selectEcfTargetAndSetWorkspaceEcfSettings(
+	ecfFilePath: string,
+	ecfFileUri: vscode.Uri,
+	context: vscode.ExtensionContext
+) {
+	const selectedTarget = await selectEcfTarget(ecfFilePath, context);
+	if (selectedTarget) {
+		if (vscode.workspace.getWorkspaceFolder(ecfFileUri)) {
+			ecfFilePath = vscode.workspace.asRelativePath(ecfFileUri, false).replace(/\\/g, '/');
+		}
+		await setWorkspaceEcfSettings(ecfFilePath, selectedTarget);
+		await showWorkspaceEcfSettings();
+	}
+}
+
+/**
+ * Set the full pathname of the workspace ECF file, if not done yet.
+ * @param context VSCode extension context
+ */
+export async function setInitialWorkspaceEcfFile(
+	context: vscode.ExtensionContext
+) {
+	const already_set = context.workspaceState.get<boolean>('GoboEiffelWorkspaceEcfFileAlreadySet', false);
+	if (!already_set) {
+		let workspaceEcfFile = getWorkspaceEcfFile();
+		if (!workspaceEcfFile) {
+			await selectEcfFileAndSetWorkspaceEcfSettings(context);
+		}
+		context.workspaceState.update('GoboEiffelWorkspaceEcfFileAlreadySet', true);
+	}
 }
 
 /**

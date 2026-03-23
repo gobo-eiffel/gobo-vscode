@@ -3,12 +3,14 @@
 import * as vscode from 'vscode';
 import { activateEiffelLanguageServer, deactivateEiffelLanguageServer } from './eiffelLanguageServer';
 import { activateEiffelInstaller } from './eiffelInstaller';
-import { activateEiffelCompiler } from './eiffelCompiler';
+import { activateEiffelCompiler, setInitialWorkspaceEcfFile } from './eiffelCompiler';
 import { activateEiffelDebugAdapter } from './eiffelDebugAdapter';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
+	// Set the initial workspace ECF file before launching the LSP server.
+	await setInitialWorkspaceEcfFile(context);
 	activateEiffelLanguageServer(context);
 	activateEiffelInstaller(context);
 	activateEiffelCompiler(context);
