@@ -75,7 +75,7 @@ jobs:
           rm: true
 
 #
-# Update VS Code Marketplace.
+# Update VS Code Marketplace and Open-VSX.
 #
 
   update_marketspace:
@@ -96,3 +96,21 @@ jobs:
         env:
           GOBO_VSCODE_VERSION: $env:GITHUB_REF_NAME.TrimStart('v')
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+
+  update_open_vsx:
+    runs-on: ubuntu-latest
+    needs: publish_package
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: gobo_eiffel_package
+          path: .
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: publish
+        run: npx --yes ovsx publish gobo-eiffel-$GOBO_VSCODE_VERSION.vsix -p ${{ secrets.OVSX_PAT }}
+        env:
+          GOBO_VSCODE_VERSION: $env:GITHUB_REF_NAME.TrimStart('v')
