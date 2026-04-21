@@ -19,6 +19,13 @@ here.
   * This helps ensure code navigation, analysis, and compilation features are
     available immediately.
 
+* ✨ **Improved Eiffel code awareness in the editor**:
+  * Click on a keyword to highlight all related keywords of the enclosing Eiffel construct.
+  * Expand/shrink selection to the enclosing Eiffel construct using:
+    * `Shift+Alt+RightArrow` to expand
+    * `Shift+Alt+LeftArrow` to shrink
+  * Selection expansion can be repeated to progressively select larger constructs.
+
 ---
 
 ## [1.3.0] – 7 March 2026
