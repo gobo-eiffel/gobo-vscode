@@ -5,6 +5,22 @@ here.
 
 ---
 
+## [1.4.0] – 22 April 2026
+
+### Added
+
+* 🌍 **Workspace environment variables support**:
+  * Environment variables defined at the workspace level are now taken into account.
+  * This is especially useful when the workspace ECF file relies on environment variables.
+
+* ⚙️ **Improved workspace onboarding**:
+  * When opening a workspace for the first time, you are prompted to select a
+    **workspace ECF file** if none is configured.
+  * This helps ensure code navigation, analysis, and compilation features are
+    available immediately.
+
+---
+
 ## [1.3.0] – 7 March 2026
 
 ### Added
