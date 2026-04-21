@@ -94,7 +94,7 @@ jobs:
       - name: publish
         run: npx vsce publish --packagePath gobo-eiffel-$GOBO_VSCODE_VERSION.vsix
         env:
-          GOBO_VSCODE_VERSION: $env:GITHUB_REF_NAME.TrimStart('v')
+          GOBO_VSCODE_VERSION: $GITHUB_REF_NAME.TrimStart('v')
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   update_open_vsx:
@@ -113,4 +113,4 @@ jobs:
       - name: publish
         run: npx --yes ovsx publish gobo-eiffel-$GOBO_VSCODE_VERSION.vsix -p ${{ secrets.OVSX_PAT }}
         env:
-          GOBO_VSCODE_VERSION: $env:GITHUB_REF_NAME.TrimStart('v')
+          GOBO_VSCODE_VERSION: $GITHUB_REF_NAME.TrimStart('v')
