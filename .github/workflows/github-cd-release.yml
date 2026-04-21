@@ -43,8 +43,14 @@ jobs:
     needs: build_package
     steps:
       - uses: actions/checkout@v4
+      - name: extract_gobo_vscode_version
+        id: gobo_vscode_version
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
       - name: extract_release_notes
-        run: . "$env:GITHUB_WORKSPACE/.cicd/extract_release_notes.ps1" $env:GITHUB_REF_NAME.TrimStart('v') CHANGELOG.md release_notes.md
+        run: . "$env:GITHUB_WORKSPACE/.cicd/extract_release_notes.ps1" ${{ steps.gobo_vscode_version.outputs.version }} CHANGELOG.md release_notes.md
         shell: pwsh
       - uses: softprops/action-gh-release@v2
         with:
@@ -91,10 +97,15 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - name: extract_gobo_vscode_version
+        id: gobo_vscode_version
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
       - name: publish
-        run: npx vsce publish --packagePath gobo-eiffel-$GOBO_VSCODE_VERSION.vsix
+        run: npx vsce publish --packagePath gobo-eiffel-${{ steps.gobo_vscode_version.outputs.version }}.vsix
         env:
-          GOBO_VSCODE_VERSION: $GITHUB_REF_NAME.TrimStart('v')
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   update_open_vsx:
@@ -110,7 +121,11 @@ jobs:
         with:
           node-version: 20
           cache: npm
+      - name: extract_gobo_vscode_version
+        id: gobo_vscode_version
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          "version=$version" >> $env:GITHUB_OUTPUT
+        shell: pwsh
       - name: publish
-        run: npx --yes ovsx publish gobo-eiffel-$GOBO_VSCODE_VERSION.vsix -p ${{ secrets.OVSX_PAT }}
-        env:
-          GOBO_VSCODE_VERSION: $GITHUB_REF_NAME.TrimStart('v')
+        run: npx --yes ovsx publish gobo-eiffel-${{ steps.gobo_vscode_version.outputs.version }}.vsix -p ${{ secrets.OVSX_PAT }}
