@@ -143,6 +143,11 @@
 				"category": "Gobo Eiffel"
 			},
 			{
+				"command": "gobo-eiffel.createEiffelProject",
+				"title": "Create Eiffel Project...",
+				"category": "Gobo Eiffel"
+			},
+			{
 				"command": "gobo-eiffel.createEcfFile",
 				"title": "Create ECF File",
 				"category": "Gobo Eiffel"
@@ -736,25 +741,29 @@
 					"group": "gobo-eiffel@15"
 				},
 				{
-					"command": "gobo-eiffel.createEcfFile",
-					"when": "resourceExtname == .e",
+					"command": "gobo-eiffel.createEiffelProject",
 					"group": "gobo-eiffel@16"
 				},
 				{
-					"command": "gobo-eiffel.setWorkspaceEnvironmentVariables",
+					"command": "gobo-eiffel.createEcfFile",
+					"when": "resourceExtname == .e",
 					"group": "gobo-eiffel@17"
 				},
 				{
-					"command": "gobo-eiffel.newGoboEiffelTerminal",
+					"command": "gobo-eiffel.setWorkspaceEnvironmentVariables",
 					"group": "gobo-eiffel@18"
 				},
 				{
-					"command": "gobo-eiffel.selectGoboEiffelInstallation",
+					"command": "gobo-eiffel.newGoboEiffelTerminal",
 					"group": "gobo-eiffel@19"
 				},
 				{
-					"command": "gobo-eiffel.restartLanguageServer",
+					"command": "gobo-eiffel.selectGoboEiffelInstallation",
 					"group": "gobo-eiffel@20"
+				},
+				{
+					"command": "gobo-eiffel.restartLanguageServer",
+					"group": "gobo-eiffel@21"
 				}
 			],
 			"explorer/context": [

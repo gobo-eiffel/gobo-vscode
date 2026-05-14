@@ -17,11 +17,22 @@ Gobo Eiffel supports both **Beginner mode** for a single file and
 
 ### 1️⃣ Beginner: Hello World
 
-If you are new to Eiffel, follow our
-[Eiffel For Beginners](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html) guide.  
-It shows how to create a simple `hello_world.e` file, compile it, and run it in VS Code.
+If you are new to Eiffel:
 
-> **Note:** No ECF file is needed for this simple workflow.
+1. Open an empty folder in VS Code.
+
+2. Create a new Eiffel project:
+   * From the *Command Palette* (with `Ctrl+Shift+P`, or `Cmd+Shift+P` on
+     MacOS) type "Gobo Eiffel" and select [**Gobo Eiffel: Create Eiffel Project...**](https://gobo-eiffel.github.io/gobo-vscode/doc/create_eiffel_project.html)
+   * If this is the first time you use this VS Code extension,
+     you will be asked to install *Gobo Eiffel*. Just follow
+     the instructions.
+   * Enter the name of the project (e.g. `hello_world`) when asked
+     and type `Enter`.
+3. You now have a simple *Hello World* Eiffel file, that you can
+   edit, customize,
+   [compile and run](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
+   in VS Code.
 
 ### 2️⃣ Advanced: Workspace with ECF File
 
@@ -29,9 +40,8 @@ For full projects with multiple classes, libraries, or targets:
 
 1. Open your Eiffel project folder in VS Code.
 
-2. Specify your **workspace ECF file** and target:
-   * Right-click the ECF file → **Eiffel Configuration** → **Select Current File As Workspace ECF File**
-   * Or right-click another file → **Eiffel Configuration** → **Select Workspace ECF File**
+2. Specify your **workspace ECF file**, target and environment variables
+   when asked by VS Code.
 
 3. You now have full access to:
    * **Code navigation** (definitions, implementations, types)
@@ -186,8 +196,9 @@ or via `settings.json`.
 | **`gobo-eiffel.useNightlyBuild`** | Use Gobo Eiffel nightly build instead of the latest release. | `false` |
 | **`gobo-eiffel.workspaceEcfFile`** | ECF file to analyze Eiffel classes in current workspace. | `null` |
 | **`gobo-eiffel.workspaceEcfTarget`** | Target in ECF file to analyze Eiffel classes in current workspace. | `null` |
+| **`gobo-eiffel.workspaceEnvironmentVariables`** | Environment variables used when resolving ECF files. | `null` |
 
-The last two settings are *workspace-specific settings* used to
+The last three settings are *workspace-specific settings* used to
 specify the [workspace ECF file](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html),
 which allows the Eiffel analyzer to discover and analyze the
 classes used in the current project.
@@ -213,6 +224,7 @@ contextual menus:
 * [Compile Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile-eiffel-file)
 * [Run Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-eiffel-file)
 * [Lint Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#lint-eiffel-file)
+* [Create Eiffel Project](https://gobo-eiffel.github.io/gobo-vscode/doc/create_eiffel_project.html)
 * [Create ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/create_ecf_file.html)
 * [Select Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#select-workspace-ecf-file)
 * [Select Current File as Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#select-current-file-as-workspace-ecf-file)
@@ -222,7 +234,8 @@ contextual menus:
 
 ## 📚 More Information
 
-* [Gobo Eiffel Documentation](https://www.gobosoft.com)
+* [Gobosoft](https://www.gobosoft.com)
+* [Gobo Eiffel Documentation](https://www.gobosoft.com/eiffel/gobo)
 * [Gobo Eiffel Code Repository](https://github.com/gobo-eiffel/gobo)
 * [Eiffel Language Reference](https://www.eiffel.org)
 
