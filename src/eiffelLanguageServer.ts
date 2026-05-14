@@ -70,21 +70,21 @@ const traceOutputChannel = vscode.window.createOutputChannel("Gobo Eiffel LSP Tr
 
 
 export async function startLanguageServer(context: vscode.ExtensionContext, restart: boolean = false) {
-	if (startingLanguageServer) {
+	if (startingLanguageServer || client) {
 		return;
 	}
+	startingLanguageServer = true;
+
 	statusItem.text = `$(sync~spin) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 	statusItem.tooltip = `Eiffel Language Server is ${((restart)?"re":"")}starting...\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to select another version...`;
 
-	startingLanguageServer = true;
 	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
-	startingLanguageServer = false;
-
 	if (!goboEiffelPath) {
 		goboEiffelVersion = undefined;
 		vscode.window.showErrorMessage(`Failed to launch Gobo Eiffel Language Server: Gobo Eiffel not installed.`);
 		statusItem.text = "$(error) Gobo Eiffel";
 		statusItem.tooltip = "Gobo Eiffel not installed\nClick to install...";
+		startingLanguageServer = false;
 		return;
 	}
 
@@ -106,6 +106,7 @@ export async function startLanguageServer(context: vscode.ExtensionContext, rest
 		vscode.window.showErrorMessage(`Failed to launch Gobo Eiffel Language Server: ${err.message}`);
 		statusItem.text = `$(error) Gobo Eiffel${((goboEiffelVersion)?" "+goboEiffelVersion.shortVersion:"")}`;
 		statusItem.tooltip = `No Eiffel Language Server found\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to select another version...`;
+		startingLanguageServer = false;
 		return;
 	}
 
@@ -142,7 +143,8 @@ export async function startLanguageServer(context: vscode.ExtensionContext, rest
 	client.onNotification(eiffelRestartNotification, () => {
 		restartLanguageServer(context);
 	});
-
+	startingLanguageServer = false;
+	
 	// Start server and update status bar
 	client.start().then(() => {
 		statusItem.tooltip = `Eiffel Language Server is running\n${((goboEiffelVersion)?"Gobo Eiffel "+goboEiffelVersion.longVersion+"\n":"")}Click to restart or select another version...`;

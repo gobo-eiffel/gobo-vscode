@@ -240,3 +240,17 @@ export function ensureEmptyDir(dirPath: string, clearIfNotEmpty = false): void {
 		throw new Error(`Installation folder "${dirPath}" is not empty.`);
 	}
 }
+
+/**
+ * Open file in editor.
+ * @param filePath Path to the file to be opened
+ */
+export async function openFileInEditor(filePath: string) {
+	const fileUri = vscode.Uri.file(filePath);
+	try {
+		const doc = await vscode.workspace.openTextDocument(fileUri); // load the file
+		await vscode.window.showTextDocument(doc); // show in editor
+	} catch (err) {
+		vscode.window.showErrorMessage(`Failed to open file: ${err}`);
+	}
+}

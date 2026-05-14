@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import { getOrInstallOrUpdateGoboEiffel } from './eiffelInstaller';
-import { resolveEnvironmentVariables, getNthLineSync } from './eiffelUtilities';
+import { resolveEnvironmentVariables, getNthLineSync, openFileInEditor } from './eiffelUtilities';
 import { createNewGoboEiffelTerminal, executeInTerminal } from './eiffelTerminal';
 
 const outputChannel = vscode.window.createOutputChannel("Gobo Eiffel compilation");
@@ -444,6 +444,11 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(lintWithWorkspaceEcfFileCmd);
 
+	const createEiffelProjectCmd = vscode.commands.registerCommand('gobo-eiffel.createEiffelProject', async () => {
+		await createEiffelProjectAndSetWorkspaceEcfSettings(context);
+	});
+	context.subscriptions.push(createEiffelProjectCmd);
+
 	const createEcfFileCmd = vscode.commands.registerCommand('gobo-eiffel.createEcfFile', async (uri?: vscode.Uri, uris?: vscode.Uri[]) => {
 		let filePath: string;
 		if (uri) {
@@ -508,13 +513,7 @@ export function activateEiffelCompiler(context: vscode.ExtensionContext) {
 			vscode.window.showErrorMessage('No workspace ECF file selected');
 			return;
 		}
-		const fileUri = vscode.Uri.file(filePath);
-		try {
-			const doc = await vscode.workspace.openTextDocument(fileUri); // load the file
-			await vscode.window.showTextDocument(doc); // show in editor
-		} catch (err) {
-			vscode.window.showErrorMessage(`Failed to open file: ${err}`);
-		}
+		await openFileInEditor(filePath);
 	});
 	context.subscriptions.push(showWorkspaceEcfFileCmd);
 
@@ -585,7 +584,7 @@ export async function compileEiffelSystem(
 
 	let error_code: number = 0;
 	try {
-		error_code = await spawnInOutputChannel(
+		error_code = await spawnCompilationInOutputChannel(
 			compiler,
 			((ecfTarget) ? [`--target=${ecfTarget}`] : []).concat([...compilationOptions, filePath]),
 			buildDir,
@@ -720,7 +719,7 @@ export async function lintEiffelSystem(
 	const cwd = ((fs.existsSync(filePath)) ? path.dirname(filePath) : '.');
 	let error_code: number = 0;
 	try {
-		error_code = await spawnInOutputChannel(
+		error_code = await spawnCompilationInOutputChannel(
 			gelintPath,
 			((ecfTarget) ? [`--target=${ecfTarget}`] : []).concat([...lintOptions, '--flat', filePath]),
 			cwd,
@@ -739,21 +738,52 @@ export async function lintEiffelSystem(
  * Create an ECF file to compile the class contained in an Eiffel file.
  * @param filePath Eiffel file containing the root class
  * @param context VSCode extension context
- * @returns a Promise that resolves when the process exits.
+ * @returns the exit code
  */
 export async function createEcfFile(
 	filePath: string,
 	context: vscode.ExtensionContext
-): Promise<void> {
+): Promise<number> {
 
 	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
 	if (!goboEiffelPath) {
-		vscode.window.showErrorMessage(`Cannot run gedoc: Gobo Eiffel not installed`);
-		return;
+		return -1;
 	}
-	const gedocPath = path.join(goboEiffelPath, 'bin', 'gedoc' + (os.platform() === 'win32' ? '.exe' : ''));
-	await executeInTerminal(gedocPath, ['--format=ecf_pretty_print', '--interactive', filePath], path.dirname(filePath), await getEnvironmentVariables(context), context);
-	return;
+
+	const compiler = path.join(goboEiffelPath, 'bin', 'gec' + (os.platform() === 'win32' ? '.exe' : ''));
+	try {
+		if (!fs.existsSync(compiler)) {
+			throw new Error(`file not found: ${compiler}`);
+		}
+		try {
+			fs.accessSync(compiler, fs.constants.X_OK);
+		} catch {
+			throw new Error(`file is not executable: ${compiler}`);
+		}
+	} catch (err: any) {
+		vscode.window.showErrorMessage(`Failed to launch Gobo Eiffel compiler: ${err.message}`);
+		return -1;
+	}
+
+	outputChannel.clear();
+	outputChannel.show(true);
+	outputChannel.appendLine(`Creating ECF file for ${filePath}...`);
+
+	let error_code: number = 0;
+	try {
+		error_code = await spawnInOutputChannel(
+			compiler,
+			['--init', filePath],
+			path.dirname(filePath),
+			await getEnvironmentVariables(context)
+		);
+	} catch (err: any) {
+		if (error_code === 0) {
+			error_code = -1;
+		}
+		vscode.window.showErrorMessage(err.message);
+	}
+	return error_code;
 }
 
 /**
@@ -941,6 +971,84 @@ async function selectEcfTargetAndSetWorkspaceEcfSettings(
 }
 
 /**
+ * Create Eiffel project with ECF file and Eiffel root class file, and set workspace settings.
+ * @param context VSCode extension context
+ */
+async function createEiffelProjectAndSetWorkspaceEcfSettings(
+	context: vscode.ExtensionContext
+) {
+
+	const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+	if (!workspaceFolder) {
+		vscode.window.showErrorMessage(`Unknown workspace folder`);
+		return;
+	}
+
+	const goboEiffelPath = await getOrInstallOrUpdateGoboEiffel(context);
+	if (!goboEiffelPath) {
+		return;
+	}
+
+	const compiler = path.join(goboEiffelPath, 'bin', 'gec' + (os.platform() === 'win32' ? '.exe' : ''));
+	try {
+		if (!fs.existsSync(compiler)) {
+			throw new Error(`file not found: ${compiler}`);
+		}
+		try {
+			fs.accessSync(compiler, fs.constants.X_OK);
+		} catch {
+			throw new Error(`file is not executable: ${compiler}`);
+		}
+	} catch (err: any) {
+		vscode.window.showErrorMessage(`Failed to launch Gobo Eiffel compiler: ${err.message}`);
+		return;
+	}
+
+	let projectName = await vscode.window.showInputBox({
+		title: 'Eiffel Project Name',
+		prompt: 'Enter Eiffel project name',
+		placeHolder: 'hello_world',
+		value: '',
+		ignoreFocusOut: true,
+		validateInput: (text) => {
+			if (text.trim().length === 0) {
+				return 'Name cannot be empty';
+			} else if (!text.trim().match(/^[a-zA-Z][a-zA-Z0-9_]*$/)) {
+				return 'Name should start with a letter followed by zero or more letters, digits or underscores';
+			}
+			return null;
+		}
+	});
+	if (!projectName) {
+		return;
+	}
+	projectName = projectName.trim().toLowerCase();
+
+	outputChannel.clear();
+	outputChannel.show(true);
+	outputChannel.appendLine(`Creating Eiffel project ${projectName}...`);
+
+	let error_code: number = 0;
+	try {
+		error_code = await spawnInOutputChannel(
+			compiler,
+			['--init', projectName],
+			workspaceFolder,
+			await getEnvironmentVariables(context)
+		);
+	} catch (err: any) {
+		if (error_code === 0) {
+			error_code = -1;
+		}
+		vscode.window.showErrorMessage(err.message);
+	}
+	if (error_code === 0) {
+		await setWorkspaceEcfSettings(projectName + ".ecf", projectName);
+		await openFileInEditor(path.join(workspaceFolder, projectName + ".e"));
+	}
+}
+
+/**
  * Set the full pathname of the workspace ECF file, if not done yet.
  * @param context VSCode extension context
  */
@@ -951,7 +1059,14 @@ export async function setInitialWorkspaceEcfFile(
 	if (!already_set) {
 		let workspaceEcfFile = getWorkspaceEcfFile();
 		if (!workspaceEcfFile) {
-			await selectEcfFileAndSetWorkspaceEcfSettings(context);
+			const hasEiffelProject = (await vscode.workspace.findFiles(
+				'**/*.{e,ecf}',
+				'**/{node_modules,.git,EIFGENs}/**',
+				1
+			)).length > 0;
+			if (hasEiffelProject) {
+				await selectEcfFileAndSetWorkspaceEcfSettings(context);
+			}
 		}
 		context.workspaceState.update('GoboEiffelWorkspaceEcfFileAlreadySet', true);
 	}
@@ -1104,6 +1219,91 @@ async function getDefaultEcfTarget(
 }
 
 /**
+ * Run program in Output channel.
+ * @param program Program to be executed
+ * @param args Arguments to be passed to the program
+ * @param cwd Where to run the program
+ * @param env Environment variables to be passed to the program 
+ * @returns the exit code
+ */
+async function spawnInOutputChannel(
+	program: string,
+	args: string[],
+	cwd: string,
+	env: NodeJS.ProcessEnv,
+): Promise<number> {
+	const childEnv = { ...env, ZIG_PROGRESS: '3', ZIG_VERBOSE_CC: 'true' };
+
+	let error_code: number = 0;
+	await new Promise<void>((resolve, reject) => {
+		const child = cp.spawn(
+			program,
+			args,
+			{ cwd: cwd, env: childEnv, stdio: ['ignore', 'pipe', 'pipe'] }
+		);
+
+		let outBuffer = '';
+		if (child.stdout) {
+			child.stdout.setEncoding('utf8');
+			child.stdout.on('data', (d: string) => {
+				outBuffer += d.replace(/\r/g, '');
+				let idx: number;
+				while ((idx = outBuffer.indexOf('\n')) !== -1) {
+					const line = outBuffer.slice(0, idx);
+					outBuffer = outBuffer.slice(idx + 1);
+					outputChannel.appendLine(line);
+				}
+
+				// If buffer grows very large without newline, try to handle as a single message (fallback)
+				const MAX_BUF = 1024 * 64; // 64KB
+				if (outBuffer.length > MAX_BUF) {
+					outBuffer = '';
+				}
+			});
+		}
+
+		let errBuffer = '';
+		if (child.stderr) {
+			child.stderr.setEncoding('utf8');
+			child.stderr.on('data', (d: string) => {
+				// Try to split by newline; if no newline, accumulate in buffer
+				errBuffer += d;
+				// If we have newline(s), process each line
+				let idx: number;
+				while ((idx = errBuffer.indexOf('\n')) !== -1) {
+					const line = errBuffer.slice(0, idx);
+					errBuffer = errBuffer.slice(idx + 1);
+					outputChannel.appendLine(line);
+				}
+
+				// If buffer grows very large without newline, try to handle as a single message (fallback)
+				const MAX_BUF = 1024 * 64; // 64KB
+				if (errBuffer.length > MAX_BUF) {
+					outputChannel.append(errBuffer);
+					errBuffer = '';
+				}
+			});
+		}
+
+		child.on('error', (err) => {
+			error_code = -1;
+			reject(err);
+		});
+		child.on('close', (code) => {
+			if (code !== null) {
+				error_code = code;
+			}
+			if (code === 0){
+				resolve();
+			} else {
+				reject(new Error(`Execution failed with code ${code}`));
+			}
+		});
+	});
+	return error_code;
+}
+
+/**
  * Run program in Output channel, with Eiffel compilation errors
  * also reported in the Problems window.
  * Process Zig progress information (sent to stderr).
@@ -1113,7 +1313,7 @@ async function getDefaultEcfTarget(
  * @param env Environment variables to be passed to the program 
  * @returns the exit code
  */
-async function spawnInOutputChannel(
+async function spawnCompilationInOutputChannel(
 	program: string,
 	args: string[],
 	cwd: string,
