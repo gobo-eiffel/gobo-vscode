@@ -10,46 +10,53 @@ Eiffel** and **experienced developers** who want an efficient workflow.
 
 ## 🚀 Quick Start
 
-Start coding in Eiffel **instantly** — no setup, no configuration, just run
-your first program in seconds!  
-Gobo Eiffel supports both **Beginner mode** for a single file and
-**Advanced mode** for full workspace projects with ECF files.
+Start coding in Eiffel **instantly** — from a single file to full
+multi-library projects.  
+Gobo Eiffel supports both a simple **Beginner workflow** and an
+advanced **Workspace + ECF workflow**.
 
 ### 1️⃣ Beginner: Hello World
 
-If you are new to Eiffel:
+New to Eiffel? Start with a minimal project in seconds:
 
 1. Open an empty folder in VS Code.
 
 2. Create a new Eiffel project:
-   * From the *Command Palette* (with `Ctrl+Shift+P`, or `Cmd+Shift+P` on
-     MacOS) type "Gobo Eiffel" and select [**Gobo Eiffel: Create Eiffel Project...**](https://gobo-eiffel.github.io/gobo-vscode/doc/create_eiffel_project.html)
-   * If this is the first time you use this VS Code extension,
-     you will be asked to install *Gobo Eiffel*. Just follow
-     the instructions.
-   * Enter the name of the project (e.g. `hello_world`) when asked
-     and type `Enter`.
-3. You now have a simple *Hello World* Eiffel file, that you can
-   edit, customize,
-   [compile and run](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
-   in VS Code.
+   * Open the *Command Palette* with `Ctrl+Shift+P` (or `Cmd+Shift+P`
+     on MacOS).
+   * Type `Gobo Eiffel` and select
+     [**Gobo Eiffel: Create Eiffel Project...**](https://gobo-eiffel.github.io/gobo-vscode/doc/create_eiffel_project.html).
+   * Enter a project name such as `hello_world` and press
+     `Enter`.
+
+3. If this is your first time using the extension, VS Code will guide you through
+   [installing Gobo Eiffel](https://gobo-eiffel.github.io/gobo-vscode/doc/select_gobo_eiffel_installation.html).
+
+4. A ready-to-run Eiffel project is created automatically, including
+   its ECF configuration file.
+
+You can now edit, [compile and run](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
+your Eiffel program directly from VS Code.
 
 ### 2️⃣ Advanced: Workspace with ECF File
 
-For full projects with multiple classes, libraries, or targets:
+For larger Eiffel projects with multiple classes, libraries, or
+targets:
 
 1. Open your Eiffel project folder in VS Code.
 
-2. Specify your **workspace ECF file**, target and environment variables
-   when asked by VS Code.
+2. When prompted, select the **workspace ECF file**, target,
+   and optional environment variables used by the project.
 
-3. You now have full access to:
-   * **Code navigation** (definitions, implementations, types)
+3. The extension automatically enables advanced Eiffel tooling
+   across the workspace, including:
+
+   * **Code navigation** (definitions, implementations, type definitions)
    * **Feature callers/callees exploration**
-   * **Client/supplier relationships**
+   * **Client/supplier relationship analysis**
    * **Inheritance hierarchy exploration**
-   * **Code completion**
-   * **Inline error reporting as you type**
+   * **Context-aware code completion**
+   * **Inline error reporting**
    * **Compilation and execution**
 
 ## 🧩 At a Glance
