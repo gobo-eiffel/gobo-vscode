@@ -5,6 +5,30 @@ here.
 
 ---
 
+## [1.5.0] – 14 May 2026
+
+### Added
+
+* 🚀 **Create Eiffel Project command**:
+  * New **Gobo Eiffel: Create Eiffel Project...** command available
+    from the *Command Palette*.
+  * Quickly generate a minimal ready-to-run Eiffel project from an
+    empty workspace folder.
+  * Automatically creates:
+    * A simple *Hello World* Eiffel class
+    * A matching ECF file configured for compilation
+  * The generated ECF file is automatically selected as the
+    **workspace ECF file**, enabling navigation, completion,
+    analysis, and compilation features immediately.
+
+### Improved
+
+* 📖 **Improved onboarding and Quick Start documentation**:
+  * New beginner-friendly workflow for creating and running a first
+    Eiffel project directly from VS Code.
+
+---
+
 ## [1.4.0] – 22 April 2026
 
 ### Added

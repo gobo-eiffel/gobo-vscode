@@ -35,7 +35,7 @@ New to Eiffel? Start with a minimal project in seconds:
 4. A ready-to-run Eiffel project is created automatically, including
    its ECF configuration file.
 
-You can now edit, [compile and run](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
+You can now edit, customize, [compile and run](https://gobo-eiffel.github.io/gobo-vscode/doc/hello_world.html)
 your Eiffel program directly from VS Code.
 
 ### 2️⃣ Advanced: Workspace with ECF File
@@ -203,7 +203,7 @@ or via `settings.json`.
 | **`gobo-eiffel.useNightlyBuild`** | Use Gobo Eiffel nightly build instead of the latest release. | `false` |
 | **`gobo-eiffel.workspaceEcfFile`** | ECF file to analyze Eiffel classes in current workspace. | `null` |
 | **`gobo-eiffel.workspaceEcfTarget`** | Target in ECF file to analyze Eiffel classes in current workspace. | `null` |
-| **`gobo-eiffel.workspaceEnvironmentVariables`** | Environment variables used when resolving ECF files. | `null` |
+| **`gobo-eiffel.workspaceEnvironmentVariables`** | Environment variables used when resolving ECF files. | `{}` |
 
 The last three settings are *workspace-specific settings* used to
 specify the [workspace ECF file](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html),
