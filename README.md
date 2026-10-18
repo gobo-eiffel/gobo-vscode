@@ -55,6 +55,7 @@ targets:
    * **Feature callers/callees exploration**
    * **Client/supplier relationship analysis**
    * **Inheritance hierarchy exploration**
+   * **Contract view**
    * **Context-aware code completion**
    * **Inline error reporting**
    * **Compilation and execution**
@@ -67,6 +68,7 @@ targets:
 | Code completion | Context-aware completion for classes and features |
 | Navigation | Jump to definitions, implementations and types |
 | Hierarchy exploration | Call hierarchy, client/supplier relationships and inheritance trees |
+| Contract view | Class text with no implementation details |
 | Compilation | Compile and run Eiffel programs directly from VS Code |
 | Error reporting | Inline errors and integration with the Problems panel |
 | Execution | Launch configurations |
@@ -98,7 +100,7 @@ targets:
 
 * **Feature signatures**
 
-  Hover to view variable types and feature signatures directly in
+  Hover to view variable types and feature signatures and contracts directly in
   tooltips.
 
   ![Feature Signature](images/feature_signature.gif)
@@ -191,6 +193,11 @@ call hierarchies, dependency relationships, and inheritance trees.
 * [Ancestor/Descendant Classes](https://gobo-eiffel.github.io/gobo-vscode/doc/ancestor_descendant_classes.html):
   Navigate the inheritance hierarchy of a class.
 
+### Contract View
+
+* [Show Contract View](https://gobo-eiffel.github.io/gobo-vscode/doc/contract_view.html): Show interface representation of the class with no implementation details.
+* [Show Flat Contract View](https://gobo-eiffel.github.io/gobo-vscode/doc/contract_view.html#flat-contract-view): Show contract view which also includes inherited features and invariants.
+
 ## ⚙️ User Settings
 
 You can customize the extension in VS Code’s **Settings**
@@ -231,6 +238,8 @@ contextual menus:
 * [Compile Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#compile-eiffel-file)
 * [Run Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#run-eiffel-file)
 * [Lint Eiffel File](https://gobo-eiffel.github.io/gobo-vscode/doc/compile_and_run_in_terminal.html#lint-eiffel-file)
+* [Show Contract View](https://gobo-eiffel.github.io/gobo-vscode/doc/contract_view.html)
+* [Show Flat Contract View](https://gobo-eiffel.github.io/gobo-vscode/doc/contract_view.html#flat-contract-view)
 * [Create Eiffel Project](https://gobo-eiffel.github.io/gobo-vscode/doc/create_eiffel_project.html)
 * [Create ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/create_ecf_file.html)
 * [Select Workspace ECF File](https://gobo-eiffel.github.io/gobo-vscode/doc/workspace_ecf_file.html#select-workspace-ecf-file)

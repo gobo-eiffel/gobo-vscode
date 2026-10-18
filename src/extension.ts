@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 import { activateEiffelLanguageServer, deactivateEiffelLanguageServer } from './eiffelLanguageServer';
 import { activateEiffelInstaller } from './eiffelInstaller';
 import { activateEiffelCompiler, setInitialWorkspaceEcfFile } from './eiffelCompiler';
+import { activateEiffelFormatViewer } from './eiffelFormatViewer';
 import { activateEiffelDebugAdapter } from './eiffelDebugAdapter';
 
 // This method is called when your extension is activated
@@ -14,6 +15,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	activateEiffelLanguageServer(context);
 	activateEiffelInstaller(context);
 	activateEiffelCompiler(context);
+	activateEiffelFormatViewer(context);
 	activateEiffelDebugAdapter(context);
 }
 

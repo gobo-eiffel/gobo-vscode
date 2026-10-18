@@ -5,6 +5,19 @@ here.
 
 ---
 
+## [1.6.0] – xx October 2026
+
+### Added
+
+* ✨ **Contract View**:
+  * Interface representation of the class, also known as *short* form,
+    with no implementation details. Only exported features, their pre-
+    and postconditions, class invariants are retained.
+  * The flat contract view, also known as *flat short* form, also includes
+    inherited features and invariants.
+
+---
+
 ## [1.5.2] – 14 October 2026
 
 ### Fixed
