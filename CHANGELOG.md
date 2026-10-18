@@ -16,6 +16,10 @@ here.
   * The flat contract view, also known as *flat short* form, also includes
     inherited features and invariants.
 
+* 🚀 **Automatic activation**:
+  * The extension now activates when a workspace contains Eiffel (.e) or
+    ECF (.ecf) files, even before an Eiffel file is opened.
+
 ---
 
 ## [1.5.2] – 14 October 2026
