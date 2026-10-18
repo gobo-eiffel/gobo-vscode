@@ -21,6 +21,8 @@
 		"Programming Languages"
 	],
 	"activationEvents": [
+		"workspaceContains:**/*.e",
+		"workspaceContains:**/*.ecf",
 		"onDebug:eiffel",
 		"onDebugInitialConfigurations",
 		"onDebugResolve:eiffel"
