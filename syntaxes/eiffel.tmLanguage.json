@@ -132,6 +132,10 @@
 			"patterns": [
 				{
 					"name": "keyword.control.eiffel",
+					"match": "(?i)\\bclass interface "
+				},
+				{
+					"name": "keyword.control.eiffel",
 					"match": "(?i)\\b(across|agent|alias|all|and|as|assign|attached|attribute|check|class|convert|create|debug|deferred|detachable)\\b"
 				},
 				{
