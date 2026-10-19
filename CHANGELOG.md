@@ -5,20 +5,20 @@ here.
 
 ---
 
-## [1.6.0] – xx October 2026
+## [1.6.0] – 19 October 2026
 
 ### Added
 
-* ✨ **Contract View**:
-  * Interface representation of the class, also known as *short* form,
-    with no implementation details. Only exported features, their pre-
-    and postconditions, class invariants are retained.
-  * The flat contract view, also known as *flat short* form, also includes
-    inherited features and invariants.
+* 📄 **Contract View**:
+  * View a class's interface without implementation details, showing only
+    exported features, their pre- and postconditions, and class invariants.
+    This is also known as *short* form.
+  * The *flat short* form additionally includes inherited features and
+    invariants.
 
-* 🚀 **Automatic activation**:
-  * The extension now activates when a workspace contains Eiffel (.e) or
-    ECF (.ecf) files, even before an Eiffel file is opened.
+* 🚀 **Automatic extension activation**:
+  * The extension now activates automatically when a workspace contains
+    Eiffel (`.e`) or ECF (`.ecf`) files, even before an Eiffel file is opened.
 
 ---
 
