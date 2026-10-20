@@ -58,6 +58,11 @@
 					"description": "Automatically checks for new Gobo Eiffel releases",
 					"default": true
 				},
+				"gobo-eiffel.ignoreClassesNotInSystem": {
+					"type": "boolean",
+					"description": "Disable reporting of validity errors in classes that are not reachable from the root class",
+					"default": false
+				},
 				"gobo-eiffel.useNightlyBuild": {
 					"type": "boolean",
 					"description": "Use Gobo Eiffel nightly build",

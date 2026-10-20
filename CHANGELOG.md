@@ -5,6 +5,16 @@ here.
 
 ---
 
+## [1.7.0] – xxxx
+
+### Improved
+
+* ⚙️ **Error reporting**:
+    * Added a setting to disable reporting of validity errors in classes
+      that are not reachable from the root class.
+
+---
+
 ## [1.6.0] – 19 October 2026
 
 ### Added
