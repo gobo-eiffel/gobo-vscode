@@ -208,6 +208,7 @@ or via `settings.json`.
 | ------- | ----------- | ------- |
 | **`gobo-eiffel.automaticUpdateCheck`** | Automatically checks for new Gobo Eiffel releases. | `true` |
 | **`gobo-eiffel.ignoreClassesNotInSystem`** | Disable reporting of validity errors in classes that are not reachable from the root class. | `false` |
+| **`gobo-eiffel.ignoreUnusedLocalVariables`** | Disable reporting of unused local variable warnings. | `false` |
 | **`gobo-eiffel.useNightlyBuild`** | Use Gobo Eiffel nightly build instead of the latest release. | `false` |
 | **`gobo-eiffel.workspaceEcfFile`** | ECF file to analyze Eiffel classes in current workspace. | `null` |
 | **`gobo-eiffel.workspaceEcfTarget`** | Target in ECF file to analyze Eiffel classes in current workspace. | `null` |
