@@ -12,6 +12,7 @@ here.
 * ⚙️ **Error reporting**:
     * Added a setting to disable reporting of validity errors in classes
       that are not reachable from the root class.
+    * Added a setting to disable reporting of unused local variable warnings.
 
 ---
 
