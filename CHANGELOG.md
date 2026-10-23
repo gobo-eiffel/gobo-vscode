@@ -5,7 +5,7 @@ here.
 
 ---
 
-## [1.7.0] – xxxx
+## [1.7.0] – 23 October 2026
 
 ### Improved
 
